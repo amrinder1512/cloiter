@@ -7,8 +7,24 @@ body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
 }
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+}
 
-
+/* Hide scrollbar for IE, Edge and Firefox */
+.overflow-x-auto {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 /* Style for HTML content injected via dangerouslySetInnerHTML */
 .service-content-html {
     line-height: 1.8;

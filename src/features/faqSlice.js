@@ -6,7 +6,7 @@ export const fetchFAQs = createAsyncThunk(
   'faqs/fetchFAQs',
   async () => {
     try {
-      const response = await api.get('/faqs');
+      const response = await api.get('/faq');
       const data = response.data;
       console.log("Fetched FAQs data:", data);
       if (!data.data || !Array.isArray(data.data)) {

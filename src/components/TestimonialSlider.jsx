@@ -1,47 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchTestimonials } from '../features/homepageSlice';
 
 const TestimonialSlider = () => {
-    const testimonials = [
-        {
-            text: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        },
-        {
-            text: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        },
-        {
-            text: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC.",
-        }
-    ];
+    const dispatch = useDispatch();
+    const { testimonials } = useSelector((state) => state.homepage);
+
+    // Default fallback data
+    const defaultData = {
+        badge: "Our Testimonials",
+        title: "What Our Clients Are",
+        highlightedTitle: "Saying",
+        testimonials: [
+            {
+                text: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            },
+            {
+                text: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+            },
+            {
+                text: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC.",
+            }
+        ]
+    };
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    useEffect(() => {
+        if (!testimonials.data && !testimonials.loading) {
+            dispatch(fetchTestimonials());
+        }
+    }, [dispatch, testimonials.data, testimonials.loading]);
+
+    // Use API data if available, otherwise use fallback
+    const data = testimonials.data || defaultData;
+    const { badge, title, highlightedTitle, testimonials: testimonialsData } = data;
+    const displayTestimonials = testimonialsData || defaultData.testimonials;
+
     const prev = () => {
-        setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+        setCurrentIndex((prev) => (prev === 0 ? displayTestimonials.length - 1 : prev - 1));
     };
 
     const next = () => {
-        setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+        setCurrentIndex((prev) => (prev === displayTestimonials.length - 1 ? 0 : prev + 1));
     };
+
+    // Show loading state
+    if (testimonials.loading) {
+        return (
+            <section className="py-6 bg-[#434242]">
+                <div className="max-w-5xl mx-auto px-5 text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
+                    <p className="text-gray-300 font-medium">Loading testimonials...</p>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="py-6 bg-[#434242] relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute opacity-10 pointer-events-none top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[500px] md:h-[500px]">
-               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-<path d="M19.5872 12.4095L9.6 33.4815V51.5903H30.0144V32.3839H22.2224L30.0144 12.4095H19.5872ZM26.9664 35.4319V48.5407H12.6496V34.1679L21.5184 15.4591H25.5536L17.7648 35.4303H26.9664V35.4319Z" fill="#E20000"/>
-<path d="M43.9727 12.4095L33.9855 33.4815V51.5903H54.3999V32.3839H46.6063L54.3999 12.4095H43.9727ZM51.3519 35.4319V48.5407H37.0351V34.1679L45.9023 15.4591H49.9375L42.1487 35.4303H51.3519V35.4319Z" fill="#E20000"/>
-</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+                    <path d="M19.5872 12.4095L9.6 33.4815V51.5903H30.0144V32.3839H22.2224L30.0144 12.4095H19.5872ZM26.9664 35.4319V48.5407H12.6496V34.1679L21.5184 15.4591H25.5536L17.7648 35.4303H26.9664V35.4319Z" fill="#E20000" />
+                    <path d="M43.9727 12.4095L33.9855 33.4815V51.5903H54.3999V32.3839H46.6063L54.3999 12.4095H43.9727ZM51.3519 35.4319V48.5407H37.0351V34.1679L45.9023 15.4591H49.9375L42.1487 35.4303H51.3519V35.4319Z" fill="#E20000" />
+                </svg>
             </div>
 
             <div className="max-w-5xl mx-auto px-5 text-center relative z-10">
                 {/* Pill Badge */}
                 <div className="inline-block bg-[#333] border border-gray-600 rounded-full px-6 py-2 mb-8 shadow-lg">
-                    <span className="text-gray-300 font-medium text-sm tracking-wide">Our Testimonials</span>
+                    <span className="text-gray-300 font-medium text-sm tracking-wide">{badge}</span>
                 </div>
 
                 {/* Heading */}
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-16">
-                    What Our Clients Are <span className="text-red-600">Saying</span>
+                    {title} <span className="text-red-600">{highlightedTitle}</span>
                 </h2>
 
                 {/* Slider Container */}
@@ -55,7 +89,7 @@ const TestimonialSlider = () => {
 
                     <div className="min-h-[150px] flex items-center justify-center">
                         <p className="text-lg md:text-2xl text-gray-200 leading-relaxed font-light transition-all duration-300">
-                            "{testimonials[currentIndex].text}"
+                            "{displayTestimonials[currentIndex].text}"
                         </p>
                     </div>
 
@@ -82,7 +116,7 @@ const TestimonialSlider = () => {
 
                 {/* Dots Indicator */}
                 <div className="flex justify-center gap-2 mt-8">
-                    {testimonials.map((_, idx) => (
+                    {displayTestimonials.map((_, idx) => (
                         <div key={idx} className={`w-2 h-2 rounded-full ${idx === currentIndex ? 'bg-red-600' : 'bg-gray-600'}`} />
                     ))}
                 </div>

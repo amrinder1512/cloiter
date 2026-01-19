@@ -1,94 +1,148 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchServices } from '../features/servicesSlice';
+import { fetchServicesHeader } from '../features/homepageSlice';
 
 const ServicesComponent = () => {
-  // 1. Data Array - Add or remove items here easily
-  const services = [
-    {
-      id: 1,
-      tag: "Service 1",
-      title: "Cloud Analytics Pro",
-      description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type.",
-      icon: "☁️", // Replace with your SVG icon
-    },
-    {
-      id: 2,
-      tag: "Service 2",
-      title: "Lorem Ipsum has been the industry's",
-      description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      icon: "📈", 
-    },
-    {
-      id: 3,
-      tag: "Service 3",
-      title: "Data Management Systems",
-      description: "Standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it.",
-      icon: "🔒",
-    },
-  ];
-
-  // 2. State to track which card is expanded (default to the middle one)
+  const dispatch = useDispatch();
+  const { items: services, loading, error } = useSelector((state) => state.services);
+  const { servicesHeader } = useSelector((state) => state.homepage);
   const [activeIndex, setActiveIndex] = useState(1);
 
+  // Default header data
+  const defaultHeaderData = {
+    badge: "Lorem ipsum dolor sit amet",
+    title: "Lorem ipsum dolor sit amet,",
+    titleBreak: "consectetuer",
+    highlightedText: "adipiscing elit."
+  };
+
+  useEffect(() => {
+    if (services.length === 0 && !loading) {
+      dispatch(fetchServices());
+    }
+    if (!servicesHeader.data && !servicesHeader.loading) {
+      dispatch(fetchServicesHeader());
+    }
+  }, [dispatch, services.length, loading, servicesHeader.data, servicesHeader.loading]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="bg-white min-h-screen py-12 md:py-20 px-4 font-sans">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-500 font-medium">Loading services...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state with retry option
+  if (error) {
+    return (
+      <div className="bg-white min-h-screen py-12 md:py-20 px-4 font-sans">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-2">Error loading services</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => dispatch(fetchServices())}
+            className="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-900 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Use only first 3 services for this component
+  const displayServices = services.slice(0, 3);
+
+  // Use API data for header if available, otherwise use fallback
+  const headerData = servicesHeader.data || defaultHeaderData;
+  const { badge, heading, titleBreak, heading2 } = headerData;
+
   return (
-    <div className="bg-white min-h-screen py-16 px-4 font-sans">
+    <div className="bg-white min-h-screen py-12 md:py-20 px-4 font-sans">
       {/* Header Section */}
-      <div className="text-center mb-12">
-        <span className="bg-gray-200 text-gray-700 px-4 py-1 rounded-md text-sm">
-          Lorem ipsum dolor sit amet
+      <div className="text-center mb-10 md:mb-16">
+        <span className="bg-gray-200 text-gray-700 px-4 py-1 rounded-md text-[10px] uppercase tracking-wider">
+          {badge}
         </span>
-        <h2 className="text-4xl font-bold mt-6 text-[#2D1B41]">
-          Lorem ipsum dolor sit amet, consectetuer <br />
-          <span className="text-red-600">adipiscing elit.</span>
+        <h2 className="text-3xl md:text-5xl font-bold mt-6 text-[#2D1B41] leading-tight">
+          {heading} <br className="hidden md:block" />
+          {titleBreak} <span className="text-red-600">{heading2}</span>
         </h2>
       </div>
 
-      {/* Dynamic Cards Container */}
-      <div className="flex flex-row justify-center items-stretch gap-4 max-w-6xl mx-auto h-[500px]">
-        {services.map((service, index) => {
+      {/* CONTAINER TRANSITION:
+          - Mobile: flex-col (vertical stack) with auto height
+          - Desktop: flex-row (horizontal pillars) with fixed height
+      */}
+      <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 max-w-6xl mx-auto min-h-[600px] md:h-[550px]">
+        {displayServices.map((service, index) => {
           const isActive = index === activeIndex;
 
           return (
             <div
               key={service.id}
               onClick={() => setActiveIndex(index)}
-              className={`relative cursor-pointer transition-all duration-500 ease-in-out rounded-3xl overflow-hidden flex flex-col items-center justify-center p-8
-                ${isActive ? 'flex-[2] bg-[#2A2A2A] border-none' : 'flex-1 bg-[#444444] border-2 border-transparent'}
-                ${!isActive && 'hover:border-blue-400'} // Highlight effect like in your image
+              className={`relative cursor-pointer transition-all duration-700 ease-in-out rounded-[40px] overflow-hidden flex flex-col p-8 md:p-12
+                ${isActive
+                  ? 'flex-[3] bg-[#2A2A2A] shadow-2xl'
+                  : 'flex-1 bg-[#444444] hover:bg-[#3d3d3d] min-h-[100px] md:min-h-0'
+                }
               `}
-              style={{
-                // Background pattern simulation
-                backgroundImage: isActive ? 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%)' : 'none',
-              }}
             >
-              {/* Content for Active Card */}
-              {isActive ? (
-                <div className="w-full h-full flex flex-col items-start justify-center animate-fadeIn">
-                  <div className="mb-6">
-                     {/* Replace with your Cloud/Search SVG */}
-                    <div className="w-20 h-20 border-2 border-white rounded-full flex items-center justify-center text-4xl">
-                      {service.icon}
-                    </div>
-                  </div>
-                  <span className="text-red-500 border border-red-900/30 bg-red-900/10 px-4 py-1 rounded-md text-sm mb-4">
-                    {service.tag}
-                  </span>
-                  <h3 className="text-white text-2xl font-semibold mb-4 leading-tight">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-8 max-w-md">
-                    {service.description}
-                  </p>
-                  <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full transition-colors uppercase text-sm tracking-wider">
-                    Know More
-                  </button>
-                </div>
-              ) : (
-                /* Content for Inactive Card */
-                <div className="flex flex-col items-center gap-4">
-                  <div className="text-4xl opacity-50 grayscale">{service.icon}</div>
-                  <p className="text-white font-medium">Lorem ipsum</p>
+              {/* Background Pattern (Visible only when active) */}
+              {isActive && (
+                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                  <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M0 50 Q 25 0 50 50 T 100 50" fill="none" stroke="white" strokeWidth="0.5" />
+                  </svg>
                 </div>
               )}
+
+              <div className={`flex flex-col h-full ${isActive ? 'items-start justify-center' : 'items-center justify-center md:justify-end'}`}>
+
+                {/* ICON: Scales up when active */}
+                <div className={`transition-all duration-500 rounded-full border-2 border-dashed border-gray-500 flex items-center justify-center mb-6 overflow-hidden
+                  ${isActive ? 'w-20 h-20 md:w-24 md:h-24' : 'w-12 h-12 md:w-16 md:h-16'}`}>
+                  <img
+                    src={service.icon}
+                    alt={service.title || 'Service icon'}
+                    className={`transition-all duration-500 object-contain ${isActive ? 'w-12 h-12 md:w-16 md:h-16' : 'w-8 h-8 md:w-10 md:h-10 opacity-50'}`}
+                  />
+                </div>
+
+                {/* ACTIVE CONTENT: Visible only when expanded */}
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isActive ? 'max-h-[500px] opacity-100' : 'max-h-0 md:max-h-full opacity-0 md:opacity-100'}`}>
+                  {isActive ? (
+                    <div className="animate-fadeIn">
+                      <span className="text-red-500 border border-red-900/30 bg-red-900/10 px-4 py-1 rounded-md text-[16px] font-bold uppercase mb-4 inline-block">
+                        {service.title || `Service ${index + 1}`}
+                      </span>
+                      {/* <h3
+                        className="text-white text-2xl md:text-3xl font-bold mb-4"
+                        dangerouslySetInnerHTML={{ __html: service.title }}
+                      /> */}
+                      <p
+                        className="text-gray-400 text-sm md:text-base mb-8 max-w-md leading-relaxed line-clamp-6"
+                        dangerouslySetInnerHTML={{ __html: service.description }}
+                      />
+                      <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-10 rounded-full transition-all uppercase text-xs tracking-[2px]">
+                        Know More
+                      </button>
+                    </div>
+                  ) : (
+                    /* INACTIVE TEXT: Rotated only on Desktop */
+                    <p className="text-white font-bold whitespace-nowrap md:rotate-[-90deg] md:mb-12 md:mt-auto">
+                      {service.title.substring(0, 12)}...
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           );
         })}

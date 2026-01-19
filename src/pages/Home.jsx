@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchServices } from '../features/servicesSlice';
+import {
+    fetchHeroSection,
+    fetchTrustedBy,
+    fetchProcess
+} from '../features/homepageSlice';
 import HeroAnimation from '../components/HeroAnimation';
 import WebFeature from '../components/WebFeature';
 import FAQ from '../components/FAQ';
@@ -13,15 +18,19 @@ const Home = () => {
     const dispatch = useDispatch();
     const { items: services, loading, error } = useSelector((state) => state.services);
 
-    // Dynamic data for homepage sections
-    const heroData = {
-        title1: "We Help you",
+    // Get homepage sections from Redux store
+    const { hero, trustedBy, process } = useSelector((state) => state.homepage);
+
+    // Fallback data for hero section
+    const defaultHeroData = {
+        title: "We Help you",
         title2: "to grow your Business",
         description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
         buttonText: "Get Started"
     };
 
-    const trustedByData = {
+    // Fallback data for trusted by section
+    const defaultTrustedByData = {
         badge: "Trusted by Clients across the globe",
         testimonials: [
             "Lorem ipsum dolor sit amet, adipiscing elit.",
@@ -30,7 +39,8 @@ const Home = () => {
         ]
     };
 
-    const processData = {
+    // Fallback data for process section
+    const defaultProcessData = {
         badge: "What you get and How we do it",
         title: "Lorem ipsum dolor sit amet, consectetuer <span class=\"text-red-600\">adipiscing elit.</span>",
         cards: [
@@ -55,11 +65,28 @@ const Home = () => {
         ]
     };
 
+    // Use API data if available, otherwise use fallback
+    const heroData = hero.data || defaultHeroData;
+    const trustedByData = trustedBy.data || defaultTrustedByData;
+    const processData = process.data || defaultProcessData;
+
     useEffect(() => {
+        // Fetch services if not already loaded
         if (services.length === 0) {
             dispatch(fetchServices());
         }
-    }, [dispatch, services.length]);
+
+        // Fetch homepage sections if not already loaded
+        if (!hero.data && !hero.loading) {
+            dispatch(fetchHeroSection());
+        }
+        if (!trustedBy.data && !trustedBy.loading) {
+            dispatch(fetchTrustedBy());
+        }
+        if (!process.data && !process.loading) {
+            dispatch(fetchProcess());
+        }
+    }, [dispatch, services.length, hero.data, hero.loading, trustedBy.data, trustedBy.loading, process.data, process.loading]);
 
     // Use a subset of services for the homepage preview
     const featuredServices = services.slice(0, 3);
@@ -97,7 +124,7 @@ const Home = () => {
                     <div className="flex-1 text-center md:text-left">
                         <h1 className="text-white mb-6 leading-[1.1]">
                             <span className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-                                {heroData.title1}
+                                {heroData.title}
                             </span>
                             <span className="block text-4xl md:text-5xl lg:text-6xl font-light tracking-wide mt-1">
                                 {heroData.title2}
@@ -153,7 +180,8 @@ const Home = () => {
                         <div className="inline-block bg-gray-200 rounded-full px-6 py-2 mb-6">
                             <span className="text-gray-700 font-bold text-sm">{processData.badge}</span>
                         </div>
-                        <h2 className="text-3xl md:text-5xl font-bold text-brand-dark" dangerouslySetInnerHTML={{ __html: processData.title }}></h2>
+                        <h1 className="text-3xl md:text-5xl font-bold text-brand-dark"> {processData.title }
+                         <span className="text-red-600">{ processData.title2 }</span> </h1>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {processData.cards.map((card, index) => (

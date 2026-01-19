@@ -1,26 +1,56 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchWebFeature } from '../features/homepageSlice';
 
-const WebFeature = ({
-    badge = "Lorem ipsum dolor sit amet",
-    title = "Lorem ipsum dolor sit amet,",
-    highlightedText = "consectetuer adipiscing elit.",
-    features = [
-        {
-            title: "Lorem Ipsum has been the industry's",
-            description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-        },
-        {
-            title: "Lorem Ipsum has been the industry's",
-            description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-        },
-        {
-            title: "Lorem Ipsum has been the industry's",
-            description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+const WebFeature = () => {
+    const dispatch = useDispatch();
+    const { webFeature } = useSelector((state) => state.homepage);
+
+    // Default fallback data
+    const defaultData = {
+        badge: "Lorem ipsum dolor sit amet",
+        title: "Lorem ipsum dolor sit amet,",
+        highlightedText: "consectetuer adipiscing elit.",
+        features: [
+            {
+                title: "Lorem Ipsum has been the industry's",
+                description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            },
+            {
+                title: "Lorem Ipsum has been the industry's",
+                description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            },
+            {
+                title: "Lorem Ipsum has been the industry's",
+                description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            }
+        ],
+        imageSrc: "/images/services.png",
+        imageAlt: "Web Development"
+    };
+
+    useEffect(() => {
+        if (!webFeature.data && !webFeature.loading) {
+            dispatch(fetchWebFeature());
         }
-    ],
-    imageSrc = "/images/services.png",
-    imageAlt = "Web Development"
-}) => {
+    }, [dispatch, webFeature.data, webFeature.loading]);
+
+    // Use API data if available, otherwise use fallback
+    const data = webFeature.data || defaultData;
+    const { badge, title, highlightedText, features, imageSrc, imageAlt } = data;
+
+    // Show loading state
+    if (webFeature.loading) {
+        return (
+            <section className="py-20 bg-[#a0a0a0]">
+                <div className="max-w-7xl mx-auto px-5 text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto mb-4"></div>
+                    <p className="text-white font-medium">Loading web features...</p>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="py-20 bg-[#a0a0a0]">
             <div className="max-w-7xl mx-auto px-5">
@@ -36,7 +66,7 @@ const WebFeature = ({
                 <div className="flex flex-col md:flex-row items-center gap-12">
                     {/* Left Text Content */}
                     <div className="flex-1 space-y-10">
-                        {features.map((item, index) => (
+                        {features && features.map((item, index) => (
                             <div key={index}>
                                 <h3 className="text-white text-xl font-bold mb-2">{item.title}</h3>
                                 <p className="text-gray-100 text-sm leading-relaxed max-w-md">
@@ -49,13 +79,11 @@ const WebFeature = ({
                     {/* Right Image/Illustration Content */}
                     <div className="flex-1 flex justify-center">
                         <div className="relative w-full max-w-md group">
-                            <img 
-                                src={imageSrc} 
-                                alt={imageAlt} 
-                                className="rounded-xl w-full h-full object-contain brightness-90 contrast-95 mix-blend-luminosity opacity-80 transition-all duration-500 group-hover:opacity-90" 
+                            <img
+                                src={imageSrc}
+                                alt={imageAlt}
+                                className="rounded-xl w-full h-full object-contain brightness-90 contrast-95 mix-blend-luminosity opacity-80 transition-all duration-500 group-hover:opacity-90"
                             />
-                            {/* Optional: Subtle shadow to give depth while blended */}
-                            {/* <div className="absolute inset-0 rounded-xl shadow-inner pointer-events-none "></div> */}
                         </div>
                     </div>
                 </div>

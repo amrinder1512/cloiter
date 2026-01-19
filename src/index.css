@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom globals if any */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+
+/* Style for HTML content injected via dangerouslySetInnerHTML */
+.service-content-html {
+    line-height: 1.8;
+    color: #4a5568; /* gray-600 */
+    font-size: 1.125rem; /* text-lg */
+}
+
+.service-content-html p {
+    /* margin-bottom: 1rem; */
+}
+
+.service-content-html strong {
+    font-weight: 700;
+    color: #1a202c; /* gray-900 */
+}
+
+.service-content-html ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    list-style-type: none; /* Custom dots below */
+}
+
+.service-content-html ul li {
+    position: relative;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+}
+
+/* Red bullet point to match your image design */
+.service-content-html ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444; /* red-500 */
+    border-radius: 50%;
+}
+
+.service-content-html h1, 
+.service-content-html h2, 
+.service-content-html h3 {
+    color: #2d3748;
+    font-weight: 700;
+    margin-top: 2rem;
+    /* margin-bottom: 1rem; */
+}
+
+.service-content-html h2 { font-size: 1.875rem; }
+.service-content-html h3 { font-size: 1.5rem; }

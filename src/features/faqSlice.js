@@ -25,10 +25,16 @@ export const fetchFAQs = createAsyncThunk(
   }
 );
 
+const FALLBACK_FAQS = [
+  { id: 1, question: 'How do I get started?', answer: 'Click on the Get Started button in the hero section.' },
+  { id: 2, question: 'What services do you offer?', answer: 'We offer web development, digital marketing, and more.' },
+  { id: 3, question: 'How can I contact support?', answer: 'You can reach us through our contact page.' }
+];
+
 const faqSlice = createSlice({
   name: 'faqs',
   initialState: {
-    items: [],
+    items: FALLBACK_FAQS,
     loading: false,
     error: null,
   },

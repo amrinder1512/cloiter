@@ -13,6 +13,7 @@ import TestimonialSlider from '../components/TestimonialSlider';
 import ServicesComponent from '../components/ServiceComponent';
 import StatsFeature from '../components/StatsFeature';
 import ThreePillarsSection from '../components/ThreePillar';
+import HeroAnimationHome from '../components/HeroAnimationHome';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -21,54 +22,10 @@ const Home = () => {
     // Get homepage sections from Redux store
     const { hero, trustedBy, process } = useSelector((state) => state.homepage);
 
-    // Fallback data for hero section
-    const defaultHeroData = {
-        title: "We Help you",
-        title2: "to grow your Business",
-        description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        buttonText: "Get Started"
-    };
-
-    // Fallback data for trusted by section
-    const defaultTrustedByData = {
-        badge: "Trusted by Clients across the globe",
-        testimonials: [
-            "Lorem ipsum dolor sit amet, adipiscing elit.",
-            "Lorem ipsum dolor sit amet, adipiscing elit.",
-            "Lorem ipsum dolor sit amet, adipiscing elit."
-        ]
-    };
-
-    // Fallback data for process section
-    const defaultProcessData = {
-        badge: "What you get and How we do it",
-        title: "Lorem ipsum dolor sit amet, consectetuer <span class=\"text-red-600\">adipiscing elit.</span>",
-        cards: [
-            {
-                image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                alt: "Meeting",
-                title: "Lorem ipsum",
-                description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa."
-            },
-            {
-                image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                alt: "Team",
-                title: "Lorem ipsum",
-                description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa."
-            },
-            {
-                image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                alt: "Office",
-                title: "Lorem ipsum",
-                description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa."
-            }
-        ]
-    };
-
-    // Use API data if available, otherwise use fallback
-    const heroData = hero.data || defaultHeroData;
-    const trustedByData = trustedBy.data || defaultTrustedByData;
-    const processData = process.data || defaultProcessData;
+    // Data for home sections with Redux fallbacks
+    const heroData = hero.data || {};
+    const trustedByData = trustedBy.data || {};
+    const processData = process.data || {};
 
     useEffect(() => {
         // Fetch services if not already loaded
@@ -95,7 +52,7 @@ const Home = () => {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
 
-    if (error) {
+    if (error && (!services || services.length === 0)) {
         return (
             <div className="min-h-screen flex items-center justify-center text-red-500 flex-col gap-4">
                 <p>Error: {error}</p>
@@ -112,43 +69,43 @@ const Home = () => {
     return (
         <div className="font-sans antialiased text-gray-800">
             {/* Hero Section */}
-            <section className="relative pt-32 md:pt-24 lg:pt-32 pb-12 bg-[#434242] overflow-hidden">
+            <section className="relative pb-12 bg-[#434242] overflow-hidden">
                 {/* 1. Technical Background Pattern */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none"
                     style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '30px 30px' }}>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between">
+                <div className="max-w-7xl mx-auto pl-5 relative z-20 flex flex-col md:flex-row items-center min-h-[600px] lg:min-h-[700px]">
 
-                    {/* Left Content */}
-                    <div className="flex-1 text-center md:text-left">
-                        <h1 className="text-white mb-6 leading-[1.1]">
-                            <span className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-                                {heroData.title}
-                            </span>
-                            <span className="block text-4xl md:text-5xl lg:text-6xl font-light tracking-wide mt-1">
-                                {heroData.title2}
-                            </span>
-                        </h1>
+                    {/* Left Content - Stays constrained and aligned with logo */}
+                    <div className="flex-1 text-center md:text-left py-20 pointer-events-none">
+                        <div className="pointer-events-auto">
+                            <h1 className="text-white mb-6 leading-[1.1]">
+                                <span className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                                    {heroData.title}
+                                </span>
+                                <span className="block text-4xl md:text-5xl lg:text-6xl font-light tracking-wide mt-1">
+                                    {heroData.title2}
+                                </span>
+                            </h1>
 
-                        <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
-                            {heroData.description}
-                        </p>
+                            <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
+                                {heroData.description}
+                            </p>
 
-                        <button className="bg-[#E20613] hover:bg-red-700 text-white px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all transform hover:scale-105 shadow-xl">
-                            {heroData.buttonText}
-                        </button>
-                    </div>
-
-                    {/* Right Animation Area */}
-                    <div className="flex-1 w-full flex justify-center items-center mt-12 md:mt-0 relative">
-                        <div className="w-full max-w-[500px] aspect-square flex justify-center items-center">
-                            <HeroAnimation />
+                            <button className="bg-[#E20613] hover:bg-red-700 text-white px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all transform hover:scale-105 shadow-xl">
+                                {heroData.buttonText}
+                            </button>
                         </div>
-
-                        {/* Floating 'V' badge from Image 2 */}
-
                     </div>
+
+                    {/* Empty space for flex layout, video is absolute to section below */}
+                    <div className="flex-1 hidden md:block"></div>
+                </div>
+
+                {/* Right Animation Area - Expanded width to 85% to bleed deep under text */}
+                <div className="absolute top-0 right-0 w-full md:w-[95%] lg:w-[90%] h-[720px] z-10 overflow-hidden pointer-events-none">
+                    <HeroAnimationHome />
                 </div>
 
                 {/* 2. Trusted By Section (Fixed Spacing) */}
@@ -161,7 +118,7 @@ const Home = () => {
                         </div>
 
                         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-center border-t border-gray-600/30 pt-10">
-                            {trustedByData.testimonials.map((testimonial, i) => (
+                            {(trustedByData.testimonials || []).map((testimonial, i) => (
                                 <div key={i} className="flex flex-col items-center">
                                     <p className="text-gray-400 text-xs md:text-sm max-w-[200px] leading-relaxed">
                                         {testimonial}
@@ -180,11 +137,11 @@ const Home = () => {
                         <div className="inline-block bg-gray-200 rounded-full px-6 py-2 mb-6">
                             <span className="text-gray-700 font-bold text-sm">{processData.badge}</span>
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-brand-dark"> {processData.title }
-                         <span className="text-red-600">{ processData.title2 }</span> </h1>
+                        <h1 className="text-3xl md:text-5xl font-bold text-brand-dark"> {processData.title}
+                            <span className="text-red-600">{processData.title2}</span> </h1>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {processData.cards.map((card, index) => (
+                        {(processData.cards || []).map((card, index) => (
                             <div key={index} className="rounded-2xl overflow-hidden bg-[#333] shadow-xl group">
                                 <div className="h-64 overflow-hidden">
                                     <img src={card.image} alt={card.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />

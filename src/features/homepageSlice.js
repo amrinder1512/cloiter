@@ -147,6 +147,57 @@ export const fetchAllHomepageData = createAsyncThunk(
     }
 );
 
+// --- Fallback Data ---
+const FALLBACK_DATA = {
+    hero: {
+        title: "We Help you",
+        title2: "to grow your Business",
+        description: "Helpk a galley of type and scrambled it to make a type specimen book.",
+        buttonText: "GET STARTED"
+    },
+    trustedBy: {
+        badge: "Trusted by Clients across the globe",
+        testimonials: [
+            "Outstanding service and exceptional results for our business.",
+            "A team of professionals who truly understand the digital landscape.",
+            "Highly recommended for anyone looking to scale their online presence."
+        ]
+    },
+    process: {
+        badge: "What you get and How we do it",
+        title: "Our Proven",
+        title2: "Process",
+        cards: [
+            { id: 1, title: 'Analysis', description: 'Deep dive into your business needs.', image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800' },
+            { id: 2, title: 'Strategy', description: 'Developing a winning plan.', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800' },
+            { id: 3, title: 'Execution', description: 'Bringing the vision to life.', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800' }
+        ]
+    },
+    webFeature: {
+        title: "Modern Web Solutions",
+        description: "We build scalable and high-performance web applications tailored to your needs.",
+        points: ["Responsive Design", "SEO Optimized", "Fast Performance"]
+    },
+    pillars: [
+        { id: 1, title: 'Security', description: 'Robust protection for your data.' },
+        { id: 2, title: 'Speed', description: 'Lightweight and fast execution.' },
+        { id: 3, title: 'Scalability', description: 'Grow without boundaries.' }
+    ],
+    statsFeature: {
+        stats: [
+            { id: 1, label: 'Projects', value: '500+' },
+            { id: 2, label: 'Clients', value: '200+' }
+        ]
+    },
+    servicesHeader: {
+        title: "Our Specialized Services",
+        subtitle: "Comprehensive solutions for modern businesses."
+    },
+    testimonials: [
+        { id: 1, name: 'John Doe', role: 'CEO', content: 'Outstanding service and results.' }
+    ]
+};
+
 const homepageSlice = createSlice({
     name: 'homepage',
     initialState: {
@@ -198,7 +249,7 @@ const homepageSlice = createSlice({
         },
         clearHomepageData: (state) => {
             Object.keys(state).forEach(key => {
-                state[key].data = null;
+                state[key].data = FALLBACK_DATA[key];
                 state[key].loading = false;
                 state[key].error = null;
             });
@@ -218,6 +269,7 @@ const homepageSlice = createSlice({
             .addCase(fetchHeroSection.rejected, (state, action) => {
                 state.hero.loading = false;
                 state.hero.error = action.error.message;
+                state.hero.data = FALLBACK_DATA.hero;
             });
 
         // --- 2. Trusted By Section ---
@@ -233,6 +285,7 @@ const homepageSlice = createSlice({
             .addCase(fetchTrustedBy.rejected, (state, action) => {
                 state.trustedBy.loading = false;
                 state.trustedBy.error = action.error.message;
+                state.trustedBy.data = FALLBACK_DATA.trustedBy;
             });
 
         // --- 3. Process Section ---
@@ -248,6 +301,7 @@ const homepageSlice = createSlice({
             .addCase(fetchProcess.rejected, (state, action) => {
                 state.process.loading = false;
                 state.process.error = action.error.message;
+                state.process.data = FALLBACK_DATA.process;
             });
 
         // --- 4. Web Feature ---
@@ -263,6 +317,7 @@ const homepageSlice = createSlice({
             .addCase(fetchWebFeature.rejected, (state, action) => {
                 state.webFeature.loading = false;
                 state.webFeature.error = action.error.message;
+                state.webFeature.data = FALLBACK_DATA.webFeature;
             });
 
         // --- 5. Three Pillars ---
@@ -278,6 +333,7 @@ const homepageSlice = createSlice({
             .addCase(fetchThreePillars.rejected, (state, action) => {
                 state.pillars.loading = false;
                 state.pillars.error = action.error.message;
+                state.pillars.data = FALLBACK_DATA.pillars;
             });
 
         // --- 6. Stats Feature ---
@@ -293,6 +349,7 @@ const homepageSlice = createSlice({
             .addCase(fetchStatsFeature.rejected, (state, action) => {
                 state.statsFeature.loading = false;
                 state.statsFeature.error = action.error.message;
+                state.statsFeature.data = FALLBACK_DATA.statsFeature;
             });
 
         // --- 7. Services Header ---
@@ -308,6 +365,7 @@ const homepageSlice = createSlice({
             .addCase(fetchServicesHeader.rejected, (state, action) => {
                 state.servicesHeader.loading = false;
                 state.servicesHeader.error = action.error.message;
+                state.servicesHeader.data = FALLBACK_DATA.servicesHeader;
             });
 
         // --- 8. Testimonials ---
@@ -323,6 +381,7 @@ const homepageSlice = createSlice({
             .addCase(fetchTestimonials.rejected, (state, action) => {
                 state.testimonials.loading = false;
                 state.testimonials.error = action.error.message;
+                state.testimonials.data = FALLBACK_DATA.testimonials;
             });
     },
 });

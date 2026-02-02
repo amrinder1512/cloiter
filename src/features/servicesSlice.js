@@ -30,6 +30,12 @@ export const fetchServices = createAsyncThunk(
   }
 );
 
+const FALLBACK_SERVICES = [
+  { id: 1, title: 'Web Development', excerpt: 'Building professional websites.', icon: '💻' },
+  { id: 2, title: 'Digital Marketing', excerpt: 'Growing your online presence.', icon: '📈' },
+  { id: 3, title: 'Graphic Design', excerpt: 'Creating stunning visuals.', icon: '🎨' }
+];
+
 const servicesSlice = createSlice({
   name: 'services',
   initialState: {
@@ -50,6 +56,7 @@ const servicesSlice = createSlice({
       .addCase(fetchServices.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        state.items = FALLBACK_SERVICES;
       });
   },
 });

@@ -138,7 +138,7 @@ const ServicesComponent = () => {
                   ) : (
                     /* INACTIVE TEXT: Rotated only on Desktop */
                     <p className="text-white font-bold whitespace-nowrap md:rotate-[-90deg] md:mb-12 md:mt-auto">
-                      {service.title.substring(0, 12)}...
+                      {(service.title || '').substring(0, 12)}...
                     </p>
                   )}
                 </div>

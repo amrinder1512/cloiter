@@ -12,8 +12,18 @@ const HeroAnimation = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl h-auto">
-      {animationData && <Lottie animationData={animationData} loop autoplay />}
+    <div
+      className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl h-auto"
+      style={{
+        mixBlendMode: 'screen',
+        opacity: 0.9
+      }}
+    >
+      {animationData && (
+        <div style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
+          <Lottie animationData={animationData} loop autoplay />
+        </div>
+      )}
     </div>
   );
 };

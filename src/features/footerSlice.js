@@ -44,10 +44,34 @@ export const fetchFooter = createAsyncThunk(
   }
 );
 
+const FALLBACK_FOOTER = {
+  logo: {
+    src: "/images/logo.png",
+    alt: "Cloiter Logo",
+    width: 224,
+    height: 64
+  },
+  description: "We offer a comprehensive suite of digital marketing services. Elevate your brand with our innovative strategies.",
+  quickLinks: [
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    { name: "About", href: "/about" },
+    { name: "Careers", href: "/careers" },
+    { name: "Contact", href: "/contact" }
+  ],
+  contact: {
+    address: "2972 Westheimer Rd.",
+    city: "Santa Ana, Illinois 85486",
+    email: "cloiter@gmail.com",
+    phone: "+123 456 7890"
+  },
+  copyright: `© ${new Date().getFullYear()} Cloiter. All rights reserved.`
+};
+
 const footerSlice = createSlice({
   name: 'footer',
   initialState: {
-    data: null,
+    data: FALLBACK_FOOTER,
     loading: false,
     error: null,
   },

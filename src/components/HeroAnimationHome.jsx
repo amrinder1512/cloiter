@@ -5,20 +5,15 @@ const HeroAnimationHome = () => {
         <div className="w-full h-full relative overflow-hidden">
             <div
                 className="absolute inset-0"
-                style={{
-                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 15%, black 65%, black 100%)',
-                    maskImage: 'linear-gradient(to right, transparent 0%, transparent 15%, black 65%, black 100%)',
-                }}
             >
                 <video
                     autoPlay
                     loop
                     muted
                     playsInline
-                    className="w-full h-full object-cover scale-105"
+                    className="w-full h-full object-cover"
                     style={{
-                        mixBlendMode: 'screen',
-                        filter: 'brightness(1.2) contrast(1.1)',
+                        filter: 'brightness(0.8) contrast(1.1)',
                     }}
                 >
                     <source src="/images/home1.mp4" type="video/mp4" />

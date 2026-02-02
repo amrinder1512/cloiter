@@ -69,17 +69,23 @@ const Home = () => {
     return (
         <div className="font-sans antialiased text-gray-800">
             {/* Hero Section */}
-            <section className="relative pb-12 bg-[#434242] overflow-hidden">
-                {/* 1. Technical Background Pattern */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none"
+            <section className="relative pb-12 overflow-hidden min-h-[600px] lg:min-h-[800px] flex items-center">
+                {/* 1. Full Background Video Area */}
+                <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
+                    <HeroAnimationHome />
+                    {/* Dark overlay for text readability */}
+                    <div className="absolute inset-0 bg-black/50"></div>
+                </div>
+
+                {/* 2. Technical Background Pattern */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none z-10"
                     style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '30px 30px' }}>
                 </div>
 
-                <div className="max-w-7xl mx-auto pl-5 relative z-20 flex flex-col md:flex-row items-center min-h-[600px] lg:min-h-[700px]">
-
-                    {/* Left Content - Stays constrained and aligned with logo */}
-                    <div className="flex-1 text-center md:text-left py-20 pointer-events-none">
-                        <div className="pointer-events-auto">
+                <div className="max-w-7xl mx-auto px-6 relative z-20 w-full">
+                    <div className="flex flex-col md:flex-row items-center">
+                        {/* Left Content */}
+                        <div className="flex-1 text-center md:text-left py-20">
                             <h1 className="text-white mb-6 leading-[1.1]">
                                 <span className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
                                     {heroData.title}
@@ -89,7 +95,7 @@ const Home = () => {
                                 </span>
                             </h1>
 
-                            <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
+                            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
                                 {heroData.description}
                             </p>
 
@@ -97,30 +103,27 @@ const Home = () => {
                                 {heroData.buttonText}
                             </button>
                         </div>
+
+                        {/* Right Content - Empty spacer to keep layout balanced */}
+                        <div className="flex-1 hidden md:block"></div>
                     </div>
-
-                    {/* Empty space for flex layout, video is absolute to section below */}
-                    <div className="flex-1 hidden md:block"></div>
                 </div>
+            </section>
 
-                {/* Right Animation Area - Expanded width to 85% to bleed deep under text */}
-                <div className="absolute top-0 right-0 w-full md:w-[95%] lg:w-[90%] h-[720px] z-10 overflow-hidden pointer-events-none">
-                    <HeroAnimationHome />
-                </div>
-
-                {/* 2. Trusted By Section (Fixed Spacing) */}
-                <div className="max-w-7xl mx-auto mt-20 px-6">
+            {/* 2. Trusted By Section (Moved outside to maintain visibility) */}
+            <section className="bg-white py-12 border-b border-gray-100">
+                <div className="max-w-7xl mx-auto px-6">
                     <div className="flex flex-col items-center">
-                        <div className="mb-10">
-                            <span className="bg-[#2D2D2D] border border-gray-600 px-6 py-2 rounded-lg text-[10px] md:text-xs font-semibold uppercase tracking-[0.2em] text-gray-300">
+                        <div className="mb-10 text-center">
+                            <span className="bg-gray-100 border border-gray-200 px-6 py-2 rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-600">
                                 {trustedByData.badge}
                             </span>
                         </div>
 
-                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-center border-t border-gray-600/30 pt-10">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-center pt-4">
                             {(trustedByData.testimonials || []).map((testimonial, i) => (
                                 <div key={i} className="flex flex-col items-center">
-                                    <p className="text-gray-400 text-xs md:text-sm max-w-[200px] leading-relaxed">
+                                    <p className="text-gray-500 text-xs md:text-sm max-w-[200px] leading-relaxed">
                                         {testimonial}
                                     </p>
                                 </div>

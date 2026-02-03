@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContactPage, submitContactForm, resetSubmitStatus } from '../features/contactSlice';
 import { addBaseUrl } from '../utils/api';
@@ -12,10 +13,11 @@ const Contact = () => {
         lastName: '',
         email: '',
         phoneNumber: '',
-        companyOrganization: '',
+        company: '',
+        inquiryType: '',
         yourIdea: '',
         country: '',
-        howCanWeHelp: ''
+        message: ''
     });
 
     useEffect(() => {
@@ -24,18 +26,19 @@ const Contact = () => {
 
     useEffect(() => {
         if (submitSuccess) {
-            alert('Thank you for contacting us! We will get back to you soon.');
+            // alert('Thank you for contacting us! We will get back to you soon.');
             setFormData({
                 firstName: '',
                 lastName: '',
                 email: '',
                 phoneNumber: '',
-                companyOrganization: '',
+                company: '',
+                inquiryType: '',
                 yourIdea: '',
                 country: '',
-                howCanWeHelp: ''
+                message: ''
             });
-            dispatch(resetSubmitStatus());
+            // dispatch(resetSubmitStatus()); // Moved to Popup Close
         }
     }, [submitSuccess, dispatch]);
 
@@ -52,6 +55,10 @@ const Contact = () => {
         dispatch(submitContactForm(formData));
     };
 
+    const closePopup = () => {
+        dispatch(resetSubmitStatus());
+    };
+
     if (loading) {
         return (
             <div className="bg-[#434242] min-h-screen flex justify-center items-center">
@@ -64,10 +71,10 @@ const Contact = () => {
     const hero = content.heroSection || {};
     const formSec = content.formSection || {};
     const points = content.points || [];
-    const contactInfos = content.bottomSection || [];
+    const contactInfos = content.bottomSection || {}; // It's an object, not array
 
     return (
-        <div className="bg-[#434242] min-h-screen pt-24 md:pt-28">
+        <div className="bg-[#434242] min-h-screen pt-24 md:pt-28 relative">
             {/* Hero Section - Get in Touch */}
             <section className="relative py-16 md:py-24 overflow-hidden">
                 <div className="max-w-8xl mx-auto px-2">
@@ -134,6 +141,28 @@ const Contact = () => {
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {error && <div className="text-red-500 mb-4">{error}</div>}
+
+                                {/* Inquiry Type */}
+                                <div>
+                                    <label className="block text-white text-sm font-semibold mb-2">
+                                        INQUIRY TYPE*
+                                    </label>
+                                    <select
+                                        name="inquiryType"
+                                        value={formData.inquiryType}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full bg-[#3a3a3a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all appearance-none cursor-pointer"
+                                    >
+                                        <option value="">Select an inquiry type...</option>
+                                        <option value="General Inquiry">General Inquiry</option>
+                                        <option value="Project Proposal">Project Proposal</option>
+                                        <option value="Partnership">Partnership</option>
+                                        <option value="Careers">Careers</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
                                 {/* First Name */}
                                 <div>
                                     <label className="block text-white text-sm font-semibold mb-2">
@@ -204,8 +233,8 @@ const Contact = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        name="companyOrganization"
-                                        value={formData.companyOrganization}
+                                        name="company"
+                                        value={formData.company}
                                         onChange={handleChange}
                                         placeholder="Enter company..."
                                         required
@@ -258,8 +287,8 @@ const Contact = () => {
                                         HOW CAN WE HELP YOU?*
                                     </label>
                                     <textarea
-                                        name="howCanWeHelp"
-                                        value={formData.howCanWeHelp}
+                                        name="message"
+                                        value={formData.message}
                                         onChange={handleChange}
                                         placeholder="Describe how we can help..."
                                         rows="4"
@@ -345,27 +374,91 @@ const Contact = () => {
             )}
 
             {/* Contact Info Section - Bottom Section from API */}
-            {contactInfos.length > 0 && (
+            {Object.keys(contactInfos).length > 0 && (
                 <section className="py-16 md:py-20 border-t border-gray-600">
                     <div className="max-w-7xl mx-auto px-5">
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
                             Contact Info
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {contactInfos.map((info, index) => (
-                                <div key={info._id || index} className="flex items-start gap-4 group">
-                                    <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform"></div>
+                            {/* Render specific keys we want from bottomSection */}
+                            {contactInfos.number && (
+                                <div className="flex items-start gap-4 group">
+                                    <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform flex-shrink-0"></div>
                                     <div>
-                                        <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer">
-                                            {info.number || info.title || info.description}
+                                        <h4 className="text-gray-400 text-sm font-semibold uppercase tracking-wider mb-1">Phone</h4>
+                                        <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer break-all">
+                                            {contactInfos.number}
                                         </p>
                                     </div>
                                 </div>
-                            ))}
+                            )}
+                            {contactInfos.email && (
+                                <div className="flex items-start gap-4 group">
+                                    <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform flex-shrink-0"></div>
+                                    <div>
+                                        <h4 className="text-gray-400 text-sm font-semibold uppercase tracking-wider mb-1">Email</h4>
+                                        <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer break-all">
+                                            {contactInfos.email}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                            {contactInfos.address && (
+                                <div className="flex items-start gap-4 group">
+                                    <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform flex-shrink-0"></div>
+                                    <div>
+                                        <h4 className="text-gray-400 text-sm font-semibold uppercase tracking-wider mb-1">Address</h4>
+                                        <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer break-words">
+                                            {contactInfos.address}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
             )}
+
+            {/* Success Modal */}
+            <AnimatePresence>
+                {submitSuccess && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-5">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                            onClick={closePopup}
+                        ></motion.div>
+
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-[#333333] border border-white/10 w-full max-w-md rounded-2xl shadow-2xl relative z-10 p-8 text-center"
+                        >
+                            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+
+                            <h3 className="text-2xl font-bold text-white mb-3">Message Sent!</h3>
+                            <p className="text-gray-300 mb-8">
+                                Thank you for contacting us. We have received your message and will get back to you shortly.
+                            </p>
+
+                            <button
+                                onClick={closePopup}
+                                className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-bold text-sm w-full transition-all duration-300 shadow-lg"
+                            >
+                                CLOSE
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

@@ -107,13 +107,13 @@ const Header = () => {
                       ) : (
                         <p className="px-4 py-2 text-gray-400 text-xs italic">Loading services...</p>
                       )}
-                      <Link
+                      {/* <Link
                         to="/services"
                         className="block px-4 py-3 text-red-500 font-bold hover:bg-red-500/10 rounded-lg transition-colors mt-2 text-center text-xs uppercase tracking-widest"
                         onClick={() => { setIsServicesOpen(false); scrollToTop(); }}
                       >
                         View All Services
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 </li>

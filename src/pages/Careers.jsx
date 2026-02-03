@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchJobs, fetchCareerPage } from '../features/careersSlice';
 import HeroAnimation from '../components/HeroAnimation';
@@ -157,9 +158,9 @@ const Careers = () => {
                                                 <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-2xl">
                                                     {job.description}
                                                 </p>
-                                                <button className="bg-red-600 hover:bg-[#434242] text-white px-8 py-3 rounded-full font-bold text-sm uppercase tracking-widest shadow-lg hover:shadow-2xl transform transition-all hover:-translate-y-1 active:scale-95">
+                                                <Link to={`/careers/${job.id}`} className="bg-red-600 hover:bg-[#434242] text-white px-8 py-3 rounded-full font-bold text-sm uppercase tracking-widest shadow-lg hover:shadow-2xl transform transition-all hover:-translate-y-1 active:scale-95 inline-block">
                                                     Apply Now
-                                                </button>
+                                                </Link>
                                             </div>
                                         </div>
                                     ))}

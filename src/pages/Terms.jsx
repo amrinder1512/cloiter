@@ -13,7 +13,7 @@ const Terms = () => {
 
     return (
         <div className="bg-white min-h-screen pt-24 pb-16">
-            <div className="max-w-4xl mx-auto px-5">
+            <div className="max-w-4xl mx-auto px-5 pb-24 ">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -29,13 +29,11 @@ const Terms = () => {
                         <div className="text-red-500 py-10">Error: {error}</div>
                     ) : (
                         <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed">
-                            {termsConditions ? (
-                                <div dangerouslySetInnerHTML={{ __html: termsConditions.content || termsConditions }} />
-                            ) : (
-                                <p>Last updated: February 3, 2026</p>
-                            )}
+                            <p className="text-sm text-gray-500 mb-6 italic">Last updated: {termsConditions?.updatedAt ? new Date(termsConditions.updatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '02 Feb 2026'}</p>
 
-                            {!termsConditions && (
+                            {termsConditions ? (
+                                <div dangerouslySetInnerHTML={{ __html: termsConditions.description || termsConditions }} />
+                            ) : (
                                 <>
                                     <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">1. Acceptance of Terms</h2>
                                     <p>By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement.</p>

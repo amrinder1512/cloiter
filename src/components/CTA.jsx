@@ -6,8 +6,12 @@ const CTA = () => {
         <section className="bg-gradient-to-r from-[#dd0000] to-[#ff4444] py-12 md:py-16 relative overflow-hidden text-white">
             <div className="max-w-7xl mx-auto px-5 flex flex-col md:flex-row justify-between items-center relative z-10 gap-6">
                 <h2 className="text-3xl md:text-4xl font-bold text-center md:text-left">Ready to work with us ?</h2>
-                <Link to="/contact" className="bg-white text-[#cc0000] border-none py-3 px-6 md:px-8 rounded-full text-base md:text-lg font-bold cursor-pointer flex items-center gap-2 transition-transform hover:scale-105 shadow-lg group">
-                    Get Started <span className="group-hover:translate-x-1 transition-transform">→</span>
+                <Link to="/contact" className="bg-white text-[#cc0000] border-none py-3 px-6 md:px-8 rounded-full text-base md:text-lg font-bold cursor-pointer flex items-center gap-2 transition-transform hover:scale-105 shadow-lg group overflow-hidden relative">
+                    <span className="relative z-10">Get Started</span>
+                    <span className="relative overflow-hidden w-6 h-6 flex items-center justify-center font-bold">
+                        <span className="absolute transform  transition-all duration-300 ease-out group-hover:translate-x-[180%]">→</span>
+                        <span className="absolute transform -translate-x-[180%] transition-all duration-300 ease-out group-hover:translate-x-0">→</span>
+                    </span>
                 </Link>
             </div>
             {/* Decorative swirl */}

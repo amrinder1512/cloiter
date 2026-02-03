@@ -96,6 +96,7 @@ const FAQ = () => {
                                             </h3>
                                             <motion.span
                                                 animate={{ rotate: activeIndex === index ? 180 : 0 }}
+                                                  transition={{ duration: 0.15, ease: "easeInOut" }}
                                                 className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border transition-all duration-300 ${activeIndex === index ? 'border-red-500 bg-red-500 text-white' : 'border-gray-500 text-gray-500 group-hover:border-white group-hover:text-white'}`}
                                             >
                                                 {activeIndex === index ? (

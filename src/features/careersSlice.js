@@ -43,6 +43,50 @@ export const fetchJobs = createAsyncThunk(
     }
 );
 
+export const submitJobApplication = createAsyncThunk(
+    'careers/submitApplication',
+    async (data, { rejectWithValue }) => {
+        try {
+            // data is now a plain object with resume URL, not FormData
+            const response = await api.post('/job-application', data);
+            return response.data;
+        } catch (error) {
+            console.error('Job application error:', error);
+            // Return backend error message if available
+            if (error.response && error.response.data && error.response.data.message) {
+                return rejectWithValue(error.response.data.message);
+            }
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const uploadResume = createAsyncThunk(
+    'careers/uploadResume',
+    async (file, { rejectWithValue }) => {
+        try {
+            const formData = new FormData();
+            formData.append('pdf', file); // Field name 'pdf' as requested
+
+            const response = await api.post('/image/upload-pdf', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            // Assume response.data contains the URL/path. Adjust based on actual API response structure.
+            // Common patterns: response.data.url, response.data.path, or just response.data if it returns string.
+            // Let's return the whole data for flexibility, or try to extract a likely property.
+            return response.data;
+        } catch (error) {
+            console.error('Upload resume error:', error);
+            if (error.response && error.response.data && error.response.data.message) {
+                return rejectWithValue(error.response.data.message);
+            }
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 const FALLBACK_JOBS = [
     { id: 1, title: 'UI/UX Designer', description: 'Join our creative team to build stunning interfaces.', department: 'Design' },
     { id: 2, title: 'Backend Developer', description: 'Scale our infrastructure with robust cloud solutions.', department: 'Technology' },
@@ -56,6 +100,11 @@ const careersSlice = createSlice({
         jobs: [],
         loading: false,
         error: null,
+        applicationLoading: false,
+        applicationSuccess: false,
+        applicationError: null,
+        uploadLoading: false,
+        uploadError: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -84,6 +133,35 @@ const careersSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
                 state.jobs = FALLBACK_JOBS;
+            })
+            // Job Application
+            .addCase(submitJobApplication.pending, (state) => {
+                state.applicationLoading = true;
+                state.applicationSuccess = false;
+                state.applicationError = null;
+            })
+            .addCase(submitJobApplication.fulfilled, (state) => {
+                state.applicationLoading = false;
+                state.applicationSuccess = true;
+                state.applicationError = null;
+            })
+            .addCase(submitJobApplication.rejected, (state, action) => {
+                state.applicationLoading = false;
+                state.applicationSuccess = false;
+                state.applicationError = action.payload || action.error.message;
+            })
+            // Upload Resume
+            .addCase(uploadResume.pending, (state) => {
+                state.uploadLoading = true;
+                state.uploadError = null;
+            })
+            .addCase(uploadResume.fulfilled, (state) => {
+                state.uploadLoading = false;
+                state.uploadError = null;
+            })
+            .addCase(uploadResume.rejected, (state, action) => {
+                state.uploadLoading = false;
+                state.uploadError = action.payload || action.error.message;
             });
     },
 });

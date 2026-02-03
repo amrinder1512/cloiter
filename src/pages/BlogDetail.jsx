@@ -74,7 +74,7 @@ const BlogDetail = () => {
                     {/* Featured Image */}
                     <div className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl mb-16 border-8 border-white">
                         <img
-                             src={blog.image ? addBaseUrl(blog.image) : "/images/blog-placeholder.jpg"}
+                            src={blog.image ? addBaseUrl(blog.image) : "/images/blog-placeholder.jpg"}
                             alt={blog.title}
                             className="w-full h-full object-cover"
                         />
@@ -84,8 +84,12 @@ const BlogDetail = () => {
                     <div className="prose prose-lg lg:prose-xl prose-gray max-w-none">
                         <div className="text-gray-600 leading-relaxed space-y-8 text-lg lg:text-xl">
                             {/* Rendering dynamic content from API */}
-                            {blog.description && (
-                                <div dangerouslySetInnerHTML={{ __html: blog.description }} />
+                            {(blog.content || blog.description) && (
+                                (blog.content || blog.description).includes('<') ? (
+                                    <div dangerouslySetInnerHTML={{ __html: blog.content || blog.description }} />
+                                ) : (
+                                    <p className="whitespace-pre-line">{blog.content || blog.description}</p>
+                                )
                             )}
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchServices } from '../features/servicesSlice';
 import { fetchServicesHeader } from '../features/homepageSlice';
@@ -6,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { addBaseUrl } from '../utils/api';
 
 const ServicesComponent = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items: services, loading, error } = useSelector((state) => state.services);
   const { servicesHeader } = useSelector((state) => state.homepage);
@@ -85,7 +87,8 @@ const ServicesComponent = () => {
       </motion.div>
 
       {/* CONTAINER TRANSITION */}
-      <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 max-w-6xl mx-auto min-h-[600px] md:h-[600px]">
+      {/* CONTAINER TRANSITION */}
+      <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 max-w-6xl mx-auto min-h-[700px]">
         {displayServices.map((service, index) => {
           const isActive = index === activeIndex;
 
@@ -94,6 +97,7 @@ const ServicesComponent = () => {
               layout
               key={service.id}
               onClick={() => setActiveIndex(index)}
+              onMouseEnter={() => setActiveIndex(index)}
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -134,14 +138,14 @@ const ServicesComponent = () => {
                   <motion.img
                     layout
                     src={service.icon ? addBaseUrl(service.icon) : "/images/Vector.png"}
-                    
+
                     alt={service.title || 'Service icon'}
                     className={`transition-all duration-500 object-contain ${isActive ? 'w-12 h-12 md:w-16 md:h-16' : 'w-8 h-8 md:w-10 md:h-10 opacity-50'}`}
                   />
                 </motion.div>
 
                 {/* ACTIVE CONTENT */}
-                <div className={`transition-all duration-500 ease-in-out overflow-hidden w-full ${isActive ? 'max-h-[500px] opacity-100' : 'max-h-0 md:max-h-full opacity-0 md:opacity-100'}`}>
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden w-full ${isActive ? 'max-h-[2000px] opacity-100' : 'max-h-0 md:max-h-full opacity-0 md:opacity-100'}`}>
                   {isActive ? (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
@@ -156,9 +160,13 @@ const ServicesComponent = () => {
                         dangerouslySetInnerHTML={{ __html: service.description }}
                       />
                       <motion.button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/services/${service.id}`);
+                        }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-10 rounded-full transition-all uppercase text-xs tracking-[2px]"
+                        className="bg-red-600 hover:bg-red-700 text-white ml-2 font-bold py-3 px-10 rounded-full transition-all uppercase text-xs tracking-[2px]"
                       >
                         Know More
                       </motion.button>

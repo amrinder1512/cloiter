@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Service from './pages/Service';
 import ServiceDetail from './pages/ServiceDetail';
 import Careers from './pages/Careers';
+import JobDetail from './pages/JobDetail';
 import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
@@ -29,6 +30,7 @@ function App() {
                             <Route path="/services" element={<Service />} />
                             <Route path="/services/:id" element={<ServiceDetail />} />
                             <Route path="/careers" element={<Careers />} />
+                            <Route path="/careers/:id" element={<JobDetail />} />
                             <Route path="/blog" element={<Blog />} />
                             <Route path="/blog/:id" element={<BlogDetail />} />
                             <Route path="/contact" element={<Contact />} />

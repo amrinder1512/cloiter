@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchServices } from '../features/servicesSlice';
 import {
@@ -121,16 +122,18 @@ const Home = () => {
                                 {heroData.description}
                             </motion.p>
 
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.8, duration: 0.5 }}
-                                className="bg-[#E20613] hover:bg-red-700 text-white px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all shadow-xl"
-                            >
-                                {heroData.buttonText}
-                            </motion.button>
+                            <Link to="/contact">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.8, duration: 0.5 }}
+                                    className="bg-[#E20613] hover:bg-red-700 text-white px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all shadow-xl"
+                                >
+                                    {heroData.buttonText}
+                                </motion.button>
+                            </Link>
                         </motion.div>
 
                         {/* Right Content - Empty spacer to keep layout balanced */}
@@ -199,18 +202,18 @@ const Home = () => {
                                 className="rounded-2xl overflow-hidden bg-[#333] shadow-xl group"
                             >
                                 <div className="h-64 overflow-hidden">
-                                    <img src={card.image ? addBaseUrl(card.image) : "/images/card-placeholder.jpg"  } 
-                                    alt={card.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    <img src={card.image ? addBaseUrl(card.image) : "/images/card-placeholder.jpg"}
+                                        alt={card.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                 </div>
                                 <div className="p-8 relative">
                                     <h3 className="text-white text-2xl font-bold mb-3">{card.title}</h3>
                                     <p className="text-gray-400 mb-12 text-sm leading-relaxed">{card.description}</p>
-                                    <motion.button
+                                    {/* <motion.button
                                         whileHover={{ scale: 1.1, backgroundColor: "#B91C1C" }}
                                         className="absolute bottom-6 right-6 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white transition"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                    </motion.button>
+                                    </motion.button> */}
                                 </div>
                             </motion.div>
                         ))}

@@ -34,7 +34,7 @@ const FALLBACK_FAQS = [
 const faqSlice = createSlice({
   name: 'faqs',
   initialState: {
-    items: FALLBACK_FAQS,
+    items: [],
     loading: false,
     error: null,
   },
@@ -51,6 +51,7 @@ const faqSlice = createSlice({
       .addCase(fetchFAQs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        state.items = FALLBACK_FAQS;
       });
   }
 });

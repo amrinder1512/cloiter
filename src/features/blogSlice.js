@@ -93,7 +93,7 @@ const blogSlice = createSlice({
             .addCase(fetchBlogs.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-                state.items = FALLBACK_BLOGS;
+                // state.items = []; // Keep empty so error shows
             })
             // Single Blog
             .addCase(fetchBlogById.pending, (state) => {
@@ -107,7 +107,7 @@ const blogSlice = createSlice({
             .addCase(fetchBlogById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-                state.currentItem = FALLBACK_BLOGS[0];
+                // state.currentItem = null; // Keep null so error shows
             });
     },
 });

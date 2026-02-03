@@ -1,26 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchStatsFeature } from '../features/homepageSlice';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate, useInView } from 'framer-motion';
 
 const Counter = ({ value }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => Math.round(latest));
 
-  // Extract number and suffix (like %)
+  // Extract number
   const numericValue = parseInt(value, 10) || 0;
-  const suffix = value.replace(/[0-9]/g, '');
 
   useEffect(() => {
-    const controls = animate(count, numericValue, {
-      duration: 2,
-      delay: 0.5,
-      ease: "easeOut"
-    });
-    return controls.stop;
-  }, [numericValue, count]);
+    if (isInView) {
+      const controls = animate(count, numericValue, {
+        duration: 2,
+        ease: "easeOut"
+      });
+      return controls.stop;
+    }
+  }, [numericValue, count, isInView]);
 
-  return <motion.span>{rounded}</motion.span>;
+  return <motion.span ref={ref}>{rounded}</motion.span>;
 };
 
 const StatsFeature = () => {
@@ -122,13 +125,15 @@ const StatsFeature = () => {
                 {blogDescription}
               </p>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "#B91C1C" }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-red-600 text-white text-[10px] font-bold py-3 px-6 rounded-full w-max transition-all"
-            >
-              {blogButtonText || "READ BLOG"}
-            </motion.button>
+            <Link to="/blog">
+              <motion.button
+                whileHover={{ scale: 1.05, backgroundColor: "#B91C1C" }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-red-600 text-white text-[10px] font-bold py-3 px-6 rounded-full w-max transition-all"
+              >
+                {blogButtonText || "READ BLOG"}
+              </motion.button>
+            </Link>
           </motion.div>
         </div>
       </div>

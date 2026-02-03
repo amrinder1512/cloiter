@@ -46,4 +46,10 @@ export const addBaseUrl = (url) => {
   return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
+export const removeNbsp = (str) => {
+  if (!str) return "";
+  return str.replace(/&nbsp;/g, ' ');
+};
+
+
 export default api;

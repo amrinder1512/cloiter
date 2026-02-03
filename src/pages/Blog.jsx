@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchBlogs } from '../features/blogSlice';
 import HeroAnimation from '../components/HeroAnimation';
-import { addBaseUrl } from '../utils/api';
+import { addBaseUrl, removeNbsp } from '../utils/api';
 
 const Blog = () => {
     const dispatch = useDispatch();
@@ -70,7 +70,7 @@ const Blog = () => {
                                     <div className="w-full aspect-[16/10] overflow-hidden relative">
                                         <img
                                             src={blog.image ? addBaseUrl(blog.image) : "/images/blog-placeholder.jpg"}
-                                            
+
                                             alt={blog.title}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         />
@@ -82,8 +82,8 @@ const Blog = () => {
                                         <h3 className="text-2xl lg:text-3xl font-bold text-[#434242] mb-4 group-hover:text-red-600 transition-colors line-clamp-2">
                                             {blog.title}
                                         </h3>
-                                        <p className="text-gray-500 text-base lg:text-lg leading-relaxed line-clamp-3">
-                                            {blog.excerpt || blog.description?.substring(0, 150) + "..."}
+                                        <p className="text-gray-500 text-base lg:text-lg leading-relaxed line-clamp-3" dangerouslySetInnerHTML={{ __html: removeNbsp(blog.content || "Welcome to our Blog.") }}>
+
                                         </p>
                                     </div>
                                 </Link>

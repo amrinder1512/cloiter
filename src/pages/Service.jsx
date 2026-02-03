@@ -2,19 +2,27 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchServices } from '../features/servicesSlice';
+import { fetchServicesHeader } from '../features/homepageSlice';
 import CTA from '../components/CTA';
 import HeroAnimation from '../components/HeroAnimation';
 import WebFeature from '../components/WebFeature';
+import { addBaseUrl } from '../utils/api';
 
 const Service = () => {
     const dispatch = useDispatch();
     const { items: services, loading, error } = useSelector((state) => state.services);
+    const { servicesHeader } = useSelector((state) => state.homepage);
+
     console.log(" services:", services);
+
     useEffect(() => {
         if (services.length === 0) {
             dispatch(fetchServices());
         }
-    }, [dispatch, services.length]);
+        if (!servicesHeader.data && !servicesHeader.loading) {
+            dispatch(fetchServicesHeader());
+        }
+    }, [dispatch, services.length, servicesHeader.data, servicesHeader.loading]);
 
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>;
@@ -24,8 +32,8 @@ const Service = () => {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 flex-col gap-4">
                 <p>Error: {error}</p>
-                <button 
-                    onClick={() => dispatch(fetchServices())} 
+                <button
+                    onClick={() => dispatch(fetchServices())}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                     Retry
@@ -34,13 +42,15 @@ const Service = () => {
         );
     }
 
+    const headerTitle = servicesHeader?.data?.title || "Our Services";
+
     return (
         <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
             {/* Hero Section */}
             <section className="bg-[#434242] py-20 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-5 flex flex-col md:flex-row justify-between items-center relative z-10 gap-4 lg:gap-48">
                     <div className="text-white mb-0 md:mb-0 lg:mb-8">
-                        <h1 className="text-4xl md:text-6xl font-bold">Our Services</h1>
+                        <h1 className="text-4xl md:text-6xl font-bold">{headerTitle}</h1>
                     </div>
                     <div className="flex-1 w-full">
                         {/* Abstract Circle */}
@@ -59,7 +69,8 @@ const Service = () => {
                             <Link to={`/services/${service.id}`} key={service.id} className="group block h-full">
                                 <div className="h-full rounded-2xl overflow-hidden shadow-xl bg-white border border-gray-100 transition-transform duration-300 group-hover:-translate-y-2 flex flex-col">
                                     <div className="bg-[#434242] py-12 flex justify-start items-center">
-                                        <img src={service.icon || "/images/Vector.png"} alt={service.title} className="w-[80px] h-[50px] md:w-[110px] md:h-[70px] ml-2 md:ml-5" />
+                                        <img src={service.icon ? addBaseUrl(service.icon) : "/images/Vector.png"}
+                                         alt={service.title} className="w-[80px] h-[50px] md:w-[110px] md:h-[70px] ml-2 md:ml-5" />
                                     </div>
                                     <div className="p-8 flex-1 flex flex-col gap-3">
                                         <h4 className="text-2xl font-bold text-gray-900">{service.title}</h4>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchThreePillars } from '../features/homepageSlice';
+import { motion } from 'framer-motion';
 
 const ThreePillarsSection = () => {
   const dispatch = useDispatch();
@@ -42,41 +43,56 @@ const ThreePillarsSection = () => {
   }
 
   return (
-    <section className="bg-white py-12 md:py-20 px-6">
+    <section className="bg-white py-12 md:py-20 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto text-center">
-        <span className="bg-gray-200 text-gray-600 text-[10px] px-4 py-1 rounded-md uppercase tracking-wider inline-block">
-          {badge || "Lorem ipsum dolor sit amet"}
-        </span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="bg-gray-200 text-gray-600 text-[10px] px-4 py-1 rounded-md uppercase tracking-wider inline-block">
+            {badge || "Lorem ipsum dolor sit amet"}
+          </span>
 
-        <h2 className="text-2xl md:text-3xl font-bold mt-4 mb-10 md:mb-16 text-[#2D1B41] leading-tight">
-          {title || "Lorem ipsum dolor sit amet, consectetuer"} <br className="hidden md:block" />
-          <span className="text-red-600">{highlightedText || "adipiscing elit."}</span>
-        </h2>
+          <h2 className="text-2xl md:text-3xl font-bold mt-4 mb-10 md:mb-16 text-[#2D1B41] leading-tight">
+            {title || "Lorem ipsum dolor sit amet, consectetuer"} <br className="hidden md:block" />
+            <span className="text-red-600">{highlightedText || "adipiscing elit."}</span>
+          </h2>
+        </motion.div>
 
-        {/* GRID FIX: 
-            'grid-cols-1' makes them vertical/stacked on mobile.
-            'md:grid-cols-3' makes them horizontal pillars on desktop.
-        */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
           {displayPillars.map((item, idx) => (
-            <div key={idx} className="border border-gray-200 rounded-[32px] overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
-
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.2, duration: 0.6 }}
+              whileHover={{ y: -10 }}
+              className="border border-gray-200 rounded-[32px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col bg-white"
+            >
               {/* Icon Section (Dark) */}
-              <div className="bg-[#444444] py-10 md:py-12 flex justify-center">
-                {/* Responsive SVG sizing */}
-                <svg className="w-16 h-16 md:w-20 md:h-20 text-white opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-[#444444] py-10 md:py-12 flex justify-center group overflow-hidden">
+                <motion.svg
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  className="w-16 h-16 md:w-20 md:h-20 text-white opacity-90 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+                </motion.svg>
               </div>
 
               {/* Text Section (White) */}
-              <div className="p-6 md:p-8 text-left bg-white flex-grow">
+              <div className="p-6 md:p-8 text-left flex-grow">
                 <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-3 md:mb-4">{item.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">
                   {item.desc} when an unknown printer took a galley of type and scrambled it to make a type specimen book.
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

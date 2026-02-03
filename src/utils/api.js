@@ -39,4 +39,11 @@ api.interceptors.response.use(
   }
 );
 
+export const addBaseUrl = (url) => {
+  if (!url) return "";
+  if (url.startsWith('http') || url.startsWith('/images/')) return url;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || '';
+  return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 export default api;

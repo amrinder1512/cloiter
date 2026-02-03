@@ -5,6 +5,9 @@ import footerReducer from '../features/footerSlice';
 import homepageReducer from '../features/homepageSlice';
 import careersReducer from '../features/careersSlice';
 import blogReducer from '../features/blogSlice';
+import contactReducer from '../features/contactSlice';
+import aboutReducer from '../features/aboutSlice';
+import policyReducer from '../features/policySlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +17,8 @@ export const store = configureStore({
     homepage: homepageReducer,
     careers: careersReducer,
     blog: blogReducer,
+    contact: contactReducer,
+    about: aboutReducer,
+    policy: policyReducer,
   },
 });

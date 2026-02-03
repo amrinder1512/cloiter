@@ -25,10 +25,10 @@ export const fetchFooter = createAsyncThunk(
         quickLinks: footer.quickLinks || [
           { name: "Home", href: "/" },
           { name: "Services", href: "/services" },
-          { name: "About", href: "#about" },
-          { name: "Contact", href: "#contact" },
-          { name: "Privacy Policy", href: "#privacy" },
-          { name: "Terms of Service", href: "#terms" },
+          { name: "About", href: "/about" },
+          { name: "Contact", href: "/contact" },
+          { name: "Privacy Policy", href: "/privacy-policy" },
+          { name: "Terms of Service", href: "/terms-and-conditions" },
         ],
         contact: footer.contact || {
           address: "123 Business Road",
@@ -71,7 +71,7 @@ const FALLBACK_FOOTER = {
 const footerSlice = createSlice({
   name: 'footer',
   initialState: {
-    data: FALLBACK_FOOTER,
+    data: null, // Start with null to allow loading
     loading: false,
     error: null,
   },

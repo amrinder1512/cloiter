@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchBlogs } from '../features/blogSlice';
 import HeroAnimation from '../components/HeroAnimation';
+import { addBaseUrl } from '../utils/api';
 
 const Blog = () => {
     const dispatch = useDispatch();
@@ -68,7 +69,8 @@ const Blog = () => {
                                     {/* Image Container */}
                                     <div className="w-full aspect-[16/10] overflow-hidden relative">
                                         <img
-                                            src={blog.image || '/images/blog-placeholder.jpg'}
+                                            src={blog.image ? addBaseUrl(blog.image) : "/images/blog-placeholder.jpg"}
+                                            
                                             alt={blog.title}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         />

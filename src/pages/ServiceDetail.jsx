@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector ,useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import HeroAnimation from '../components/HeroAnimation';
 import { fetchServices } from '../features/servicesSlice';
 
@@ -8,8 +8,8 @@ const ServiceDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-const { items: services, loading, error } = useSelector((state) => state.services);
-    
+    const { items: services, loading, error } = useSelector((state) => state.services);
+
     const service = services.find(s => String(s.id) === String(id));
     useEffect(() => {
         if (services.length === 0 && !loading) {
@@ -91,7 +91,7 @@ const { items: services, loading, error } = useSelector((state) => state.service
                     <h2 className="text-3xl font-semibold mb-10 max-w-5xl">{service.pointHeading}</h2>
                     <div className="grid md:grid-cols-2 gap-10">
                         <ul className="space-y-5">
-                            {(service.points || ['Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', 'Aenean commodo ligula eget dolor. Aenean massa.', 'Cum sociis natoque penatibus et magnis dis parturient.']).slice(0, 6).map((item, i) => (
+                            {(service.points || []).slice(0, 6).map((item, i) => (
                                 <li key={i} className="relative pl-7 text-gray-300 text-lg leading-relaxed">
                                     <span className="absolute left-0 top-2.5 w-2 h-2 bg-[#ff3333] rounded-full"></span>
                                     {item}
@@ -99,7 +99,7 @@ const { items: services, loading, error } = useSelector((state) => state.service
                             ))}
                         </ul>
                         <ul className="space-y-5">
-                            {(service.points ? service.points.slice(6) : ['Nulla consequat massa quis enim.', 'Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.', 'In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.']).map((item, i) => (
+                            {(service.points || []).slice(6).map((item, i) => (
                                 <li key={i} className="relative pl-7 text-gray-300 text-lg leading-relaxed">
                                     <span className="absolute left-0 top-2.5 w-2 h-2 bg-[#ff3333] rounded-full"></span>
                                     {item}
@@ -111,9 +111,9 @@ const { items: services, loading, error } = useSelector((state) => state.service
             </section>
 
             {/* Section 3: Bottom Text Section */}
-             <section className="py-4 bg-white">
+            <section className="py-4 bg-white">
                 <div className="max-w-7xl mx-auto px-5">
-                  
+
                     <div className="text-lg text-gray-600 leading-loose space-y-6 max-w-4xl">
                         <p className="service-content-html max-w-4xl" dangerouslySetInnerHTML={{ __html: service.descriptionBottom }}></p>
                     </div>

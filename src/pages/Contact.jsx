@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchContactPage, submitContactForm, resetSubmitStatus } from '../features/contactSlice';
+import { addBaseUrl } from '../utils/api';
 
 const Contact = () => {
+    const dispatch = useDispatch();
+    const { pageContent, loading, submitting, submitSuccess, error } = useSelector((state) => state.contact);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -12,6 +18,27 @@ const Contact = () => {
         howCanWeHelp: ''
     });
 
+    useEffect(() => {
+        dispatch(fetchContactPage());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (submitSuccess) {
+            alert('Thank you for contacting us! We will get back to you soon.');
+            setFormData({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phoneNumber: '',
+                companyOrganization: '',
+                yourIdea: '',
+                country: '',
+                howCanWeHelp: ''
+            });
+            dispatch(resetSubmitStatus());
+        }
+    }, [submitSuccess, dispatch]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -22,9 +49,22 @@ const Contact = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Add your form submission logic here
+        dispatch(submitContactForm(formData));
     };
+
+    if (loading) {
+        return (
+            <div className="bg-[#434242] min-h-screen flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+            </div>
+        );
+    }
+
+    const content = pageContent || {};
+    const hero = content.heroSection || {};
+    const formSec = content.formSection || {};
+    const points = content.points || [];
+    const contactInfos = content.bottomSection || [];
 
     return (
         <div className="bg-[#434242] min-h-screen pt-24 md:pt-28">
@@ -36,7 +76,7 @@ const Contact = () => {
                         <div className="w-full lg:w-1/2 flex justify-center">
                             <div className="relative w-full max-w-7xl">
                                 <img
-                                    src="/images/contact.jpg"
+                                    src={hero.image ? addBaseUrl(hero.image) : "/images/contact.jpg"}
                                     alt="Get in touch illustration"
                                     className="w-full h-auto drop-shadow-3xl"
                                     style={{
@@ -54,19 +94,20 @@ const Contact = () => {
                         <div className="w-full lg:w-1/2 text-center lg:text-left">
                             <div className="inline-block mb-4">
                                 <span className="bg-white text-gray-800 px-4 py-2 rounded-full text-sm font-semibold">
-                                    Contact Us
+                                    {hero.badge || "Contact Us"}
                                 </span>
                             </div>
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                                Get in touch
+                                {hero.title || "Get in touch"}
                             </h1>
                             <p className="text-gray-300 text-lg md:text-xl mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                Ut enim ad minim veniam, quis nostrud exercitation.
+                                {hero.description || "We'd love to hear from you."}
                             </p>
-                            <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-bold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                                SEND A MESSAGE
+                            <button
+                                onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-bold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                            >
+                                {hero.buttonText || "SEND A MESSAGE"}
                             </button>
                         </div>
                     </div>
@@ -74,24 +115,25 @@ const Contact = () => {
             </section>
 
             {/* Contact Form Section */}
-            <section className="relative py-16 md:py-20">
+            <section id="contact-form" className="relative py-16 md:py-20">
                 <div className="max-w-7xl mx-auto px-5">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
                         {/* Left - Form */}
                         <div>
                             <div className="mb-8">
                                 <span className="bg-white text-gray-800 px-4 py-2 rounded-full text-sm font-semibold inline-block mb-6">
-                                    Contact Us
+                                    {formSec.badge || "Get In Touch"}
                                 </span>
                                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                                    Contact Us
+                                    {formSec.title || "Contact Us"}
                                 </h2>
                                 <p className="text-gray-300 text-base leading-relaxed">
-                                    We'd love to hear from you! Fill out the form below and we'll get back to you as soon as possible. Whether you have a question, feedback, or just want to say hello, we're here to help.
+                                    {formSec.description || "Fill out the form below and we'll get back to you soon."}
                                 </p>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
+                                {error && <div className="text-red-500 mb-4">{error}</div>}
                                 {/* First Name */}
                                 <div>
                                     <label className="block text-white text-sm font-semibold mb-2">
@@ -229,9 +271,10 @@ const Contact = () => {
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
-                                    className="bg-red-600 hover:bg-red-700 text-white px-10 py-3 rounded-full font-bold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl uppercase"
+                                    disabled={submitting}
+                                    className={`bg-red-600 hover:bg-red-700 text-white px-10 py-3 rounded-full font-bold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl uppercase ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    Submit
+                                    {submitting ? 'Submitting...' : 'Submit'}
                                 </button>
                             </form>
                         </div>
@@ -246,8 +289,7 @@ const Contact = () => {
                                     className="w-full h-auto opacity-40"
                                 />
 
-                                {/* Location Pins */}
-                                {/* Europe Pin */}
+                                {/* Location Pins - Kept static/decorative for now as API doesn't seem to provide coordinates */}
                                 <div className="absolute top-[28%] left-[48%] transform -translate-x-1/2 -translate-y-1/2 group">
                                     <div className="relative">
                                         <div className="bg-white rounded-lg px-4 py-2 shadow-xl mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -256,8 +298,6 @@ const Contact = () => {
                                         <div className="w-4 h-4 bg-red-600 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
                                     </div>
                                 </div>
-
-                                {/* North America Pin */}
                                 <div className="absolute top-[32%] left-[22%] transform -translate-x-1/2 -translate-y-1/2 group">
                                     <div className="relative">
                                         <div className="bg-white rounded-lg px-4 py-2 shadow-xl mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -266,8 +306,6 @@ const Contact = () => {
                                         <div className="w-4 h-4 bg-red-600 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
                                     </div>
                                 </div>
-
-                                {/* Asia Pin */}
                                 <div className="absolute top-[35%] left-[70%] transform -translate-x-1/2 -translate-y-1/2 group">
                                     <div className="relative">
                                         <div className="bg-white rounded-lg px-4 py-2 shadow-xl mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -282,109 +320,52 @@ const Contact = () => {
                 </div>
             </section>
 
-            {/* Info Cards Section */}
-            <section className="py-16 md:py-20">
-                <div className="max-w-7xl mx-auto px-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {/* Card 01 */}
-                        <div className="bg-[#3a3a3a] border border-gray-600 rounded-lg p-6 hover:border-red-500 transition-all duration-300 group">
-                            <div className="flex items-start gap-4">
-                                <span className="text-4xl font-bold text-white/20 group-hover:text-red-500/30 transition-colors">
-                                    01
-                                </span>
-                                <div className="flex-1">
-                                    <h3 className="text-white font-bold text-lg mb-2">
-                                        Lorem ipsum dolor sit amet
-                                    </h3>
+            {/* Info Cards Section - Points from API */}
+            {points.length > 0 && (
+                <section className="py-16 md:py-20">
+                    <div className="max-w-7xl mx-auto px-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {points.map((point, index) => (
+                                <div key={point._id || index} className="bg-[#3a3a3a] border border-gray-600 rounded-lg p-6 hover:border-red-500 transition-all duration-300 group">
+                                    <div className="flex items-start gap-4">
+                                        <span className="text-4xl font-bold text-white/20 group-hover:text-red-500/30 transition-colors">
+                                            {(index + 1).toString().padStart(2, '0')}
+                                        </span>
+                                        <div className="flex-1">
+                                            <h3 className="text-white font-bold text-lg mb-2">
+                                                {point.type}
+                                            </h3>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Card 02 */}
-                        <div className="bg-[#3a3a3a] border border-gray-600 rounded-lg p-6 hover:border-red-500 transition-all duration-300 group">
-                            <div className="flex items-start gap-4">
-                                <span className="text-4xl font-bold text-white/20 group-hover:text-red-500/30 transition-colors">
-                                    02
-                                </span>
-                                <div className="flex-1">
-                                    <h3 className="text-white font-bold text-lg mb-2">
-                                        Lorem ipsum dolor sit amet
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Card 03 */}
-                        <div className="bg-[#3a3a3a] border border-gray-600 rounded-lg p-6 hover:border-red-500 transition-all duration-300 group">
-                            <div className="flex items-start gap-4">
-                                <span className="text-4xl font-bold text-white/20 group-hover:text-red-500/30 transition-colors">
-                                    03
-                                </span>
-                                <div className="flex-1">
-                                    <h3 className="text-white font-bold text-lg mb-2">
-                                        Lorem ipsum dolor sit amet
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Card 04 */}
-                        <div className="bg-[#3a3a3a] border border-gray-600 rounded-lg p-6 hover:border-red-500 transition-all duration-300 group">
-                            <div className="flex items-start gap-4">
-                                <span className="text-4xl font-bold text-white/20 group-hover:text-red-500/30 transition-colors">
-                                    04
-                                </span>
-                                <div className="flex-1">
-                                    <h3 className="text-white font-bold text-lg mb-2">
-                                        Lorem ipsum dolor sit amet
-                                    </h3>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
-            {/* Contact Info Section */}
-            <section className="py-16 md:py-20 border-t border-gray-600">
-                <div className="max-w-7xl mx-auto px-5">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
-                        Contact Info
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Phone */}
-                        <div className="flex items-start gap-4 group">
-                            <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform"></div>
-                            <div>
-                                <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer">
-                                    +123 456 7890
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Email */}
-                        <div className="flex items-start gap-4 group">
-                            <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform"></div>
-                            <div>
-                                <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer">
-                                    cloiter@gmail.com
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Address */}
-                        <div className="flex items-start gap-4 group">
-                            <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform"></div>
-                            <div>
-                                <p className="text-white text-lg font-semibold">
-                                    2972 Westheimer Rd.<br />
-                                    Santa Ana, Illinois 85486
-                                </p>
-                            </div>
+            {/* Contact Info Section - Bottom Section from API */}
+            {contactInfos.length > 0 && (
+                <section className="py-16 md:py-20 border-t border-gray-600">
+                    <div className="max-w-7xl mx-auto px-5">
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
+                            Contact Info
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {contactInfos.map((info, index) => (
+                                <div key={info._id || index} className="flex items-start gap-4 group">
+                                    <div className="w-3 h-3 bg-red-600 rounded-full mt-2 group-hover:scale-125 transition-transform"></div>
+                                    <div>
+                                        <p className="text-white text-lg font-semibold hover:text-red-500 transition-colors cursor-pointer">
+                                            {info.number || info.title || info.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
         </div>
     );
 };

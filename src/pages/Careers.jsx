@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchJobs } from '../features/careersSlice';
+import { fetchJobs, fetchCareerPage } from '../features/careersSlice';
 import HeroAnimation from '../components/HeroAnimation';
 
 const Careers = () => {
     const dispatch = useDispatch();
-    const { jobs, loading, error } = useSelector((state) => state.careers);
+    const { jobs, pageData, loading, error } = useSelector((state) => state.careers);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedDepartments, setSelectedDepartments] = useState([]);
 
     useEffect(() => {
         dispatch(fetchJobs());
+        dispatch(fetchCareerPage());
     }, [dispatch]);
 
     // Extract unique departments from jobs
@@ -39,7 +40,7 @@ const Careers = () => {
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <div className="w-full md:w-1/2">
                             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4">
-                                Careers
+                                {pageData?.title || "Careers"}
                             </h1>
                         </div>
                         <div className="w-full md:w-1/2 flex justify-center md:justify-end mt-10 md:mt-0">
@@ -62,9 +63,11 @@ const Careers = () => {
                         {/* Left Sidebar - Filters */}
                         <div className="w-full lg:w-[350px] shrink-0">
                             <div className="bg-[#434242] rounded-2xl p-8 shadow-2xl sticky top-28">
-                                <h2 className="text-2xl font-bold text-white mb-4">Open Positions</h2>
+                                <h2 className="text-2xl font-bold text-white mb-4">
+                                    {pageData?.openPositionsTitle || "Open Positions"}
+                                </h2>
                                 <p className="text-gray-400 text-sm mb-8 leading-relaxed">
-                                    Browse our open positions and find the perfect role for you. We're always looking for talented individuals to join our team.
+                                    {pageData?.openPositionsDescription || "Browse our open positions and find the perfect role for you. We're always looking for talented individuals to join our team."}
                                 </p>
 
                                 {/* Search Bar */}

@@ -11,12 +11,16 @@ import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
 import CTA from './components/CTA';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
     return (
         <Provider store={store}>
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <ScrollToTop />
                 <div className="app-container">
                     <Header />
                     <main>
@@ -29,6 +33,8 @@ function App() {
                             <Route path="/blog/:id" element={<BlogDetail />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/about" element={<About />} />
+                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                            <Route path="/terms-and-conditions" element={<Terms />} />
                         </Routes>
                     </main>
                     <CTA />

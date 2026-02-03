@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogById, clearCurrentItem } from '../features/blogSlice';
 import HeroAnimation from '../components/HeroAnimation';
+import { addBaseUrl } from '../utils/api';
 
 const BlogDetail = () => {
     const { id } = useParams();
@@ -73,7 +74,7 @@ const BlogDetail = () => {
                     {/* Featured Image */}
                     <div className="w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl mb-16 border-8 border-white">
                         <img
-                            src={blog.image || '/images/blog-placeholder.jpg'}
+                             src={blog.image ? addBaseUrl(blog.image) : "/images/blog-placeholder.jpg"}
                             alt={blog.title}
                             className="w-full h-full object-cover"
                         />
@@ -81,16 +82,10 @@ const BlogDetail = () => {
 
                     {/* Content Detail */}
                     <div className="prose prose-lg lg:prose-xl prose-gray max-w-none">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-[#434242] mb-8 leading-tight">
-                            {blog.title}, consectetur adipiscing elit.
-                        </h2>
-
                         <div className="text-gray-600 leading-relaxed space-y-8 text-lg lg:text-xl">
                             {/* Rendering dynamic content from API */}
-                            {blog.description ? (
+                            {blog.description && (
                                 <div dangerouslySetInnerHTML={{ __html: blog.description }} />
-                            ) : (
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
                             )}
                         </div>
                     </div>
@@ -98,7 +93,7 @@ const BlogDetail = () => {
             </section>
 
             {/* 3. CTA Section - Ready to work with us? */}
-          
+
         </div>
     );
 };

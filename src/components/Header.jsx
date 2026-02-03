@@ -14,6 +14,10 @@ const Header = () => {
 
   const dropdownRef = useRef(null);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Prevent background scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : 'auto';
@@ -49,7 +53,7 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-5 flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/" onClick={() => { setIsMenuOpen(false); scrollToTop(); }}>
               <img src="/images/logo.png" alt="Logo" className="w-32 md:w-40" />
             </Link>
           </div>
@@ -58,8 +62,8 @@ const Header = () => {
           <div className='flex gap-10 items-center'>
             <nav className="hidden lg:flex justify-center items-center">
               <ul className="flex gap-10 xl:gap-20 text-sm font-medium">
-                <li><Link to="/" className={isActive('/')}>Home</Link></li>
-                <li><Link to="/about" className={isActive('/about')}>About Us</Link></li>
+                <li><Link to="/" className={isActive('/')} onClick={scrollToTop}>Home</Link></li>
+                <li><Link to="/about" className={isActive('/about')} onClick={scrollToTop}>About Us</Link></li>
 
                 {/* Services Dropdown Container */}
                 <li
@@ -69,7 +73,7 @@ const Header = () => {
                   onMouseLeave={() => setIsServicesOpen(false)}
                 >
                   <div className="flex items-center gap-1 cursor-pointer">
-                    <Link to="/services" className={isActive('/services')}>
+                    <Link to="/services" className={isActive('/services')} onClick={scrollToTop}>
                       Services
                     </Link>
                     <svg
@@ -92,7 +96,7 @@ const Header = () => {
                             key={service.id}
                             to={`/services/${service.id}`}
                             className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors border-b border-white/5 last:border-0"
-                            onClick={() => setIsServicesOpen(false)}
+                            onClick={() => { setIsServicesOpen(false); scrollToTop(); }}
                           >
                             <div className="flex items-center gap-3">
                               {/* <span className="text-xl">{service.icon || '🚀'}</span> */}
@@ -106,7 +110,7 @@ const Header = () => {
                       <Link
                         to="/services"
                         className="block px-4 py-3 text-red-500 font-bold hover:bg-red-500/10 rounded-lg transition-colors mt-2 text-center text-xs uppercase tracking-widest"
-                        onClick={() => setIsServicesOpen(false)}
+                        onClick={() => { setIsServicesOpen(false); scrollToTop(); }}
                       >
                         View All Services
                       </Link>
@@ -114,14 +118,14 @@ const Header = () => {
                   </div>
                 </li>
 
-                <li><Link to="/careers" className={isActive('/careers')}>Careers</Link></li>
-                <li><Link to="/blog" className={isActive('/blog')}>Blog</Link></li>
+                <li><Link to="/careers" className={isActive('/careers')} onClick={scrollToTop}>Careers</Link></li>
+                <li><Link to="/blog" className={isActive('/blog')} onClick={scrollToTop}>Blog</Link></li>
               </ul>
             </nav>
 
             {/* Desktop CTA */}
             <div className="hidden lg:block">
-              <Link to="/contact" className="px-6 py-2.5 rounded-full text-sm font-bold bg-red-700 text-white hover:bg-red-800 inline-block">
+              <Link to="/contact" onClick={scrollToTop} className="px-6 py-2.5 rounded-full text-sm font-bold bg-red-700 text-white hover:bg-red-800 inline-block">
                 Contact Us
               </Link>
             </div>
@@ -150,8 +154,8 @@ const Header = () => {
         ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <ul className="flex flex-col gap-5 text-center w-full max-w-sm">
-          <li><Link to="/" onClick={() => setIsMenuOpen(false)} className="text-2xl text-white hover:text-red-500">Home</Link></li>
-          <li><Link to="/about" onClick={() => setIsMenuOpen(false)} className="text-2xl text-white hover:text-red-500">About Us</Link></li>
+          <li><Link to="/" onClick={() => { setIsMenuOpen(false); scrollToTop(); }} className="text-2xl text-white hover:text-red-500">Home</Link></li>
+          <li><Link to="/about" onClick={() => { setIsMenuOpen(false); scrollToTop(); }} className="text-2xl text-white hover:text-red-500">About Us</Link></li>
 
           {/* Mobile Services Accordion */}
           <li className="flex flex-col items-center">
@@ -170,7 +174,7 @@ const Header = () => {
                   <li key={service.id}>
                     <Link
                       to={`/services/${service.id}`}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => { setIsMenuOpen(false); scrollToTop(); }}
                       className="text-lg text-gray-400 hover:text-white"
                     >
                       {service.title}
@@ -180,7 +184,7 @@ const Header = () => {
                 <li>
                   <Link
                     to="/services"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => { setIsMenuOpen(false); scrollToTop(); }}
                     className="text-lg text-red-500 font-bold"
                   >
                     All Services
@@ -190,10 +194,10 @@ const Header = () => {
             </div>
           </li>
 
-          <li><Link to="/careers" onClick={() => setIsMenuOpen(false)} className={`text-2xl ${isActive('/careers')}`}>Careers</Link></li>
-          <li><Link to="/blog" onClick={() => setIsMenuOpen(false)} className={`text-2xl ${isActive('/blog')}`}>Blog</Link></li>
+          <li><Link to="/careers" onClick={() => { setIsMenuOpen(false); scrollToTop(); }} className={`text-2xl ${isActive('/careers')}`}>Careers</Link></li>
+          <li><Link to="/blog" onClick={() => { setIsMenuOpen(false); scrollToTop(); }} className={`text-2xl ${isActive('/blog')}`}>Blog</Link></li>
           <li className="mt-4">
-            <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="w-full px-8 py-4 rounded-full text-lg font-bold bg-red-700 text-white hover:bg-red-800 inline-block shadow-2xl">
+            <Link to="/contact" onClick={() => { setIsMenuOpen(false); scrollToTop(); }} className="w-full px-8 py-4 rounded-full text-lg font-bold bg-red-700 text-white hover:bg-red-800 inline-block shadow-2xl">
               Contact Us
             </Link>
           </li>

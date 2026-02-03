@@ -14,6 +14,8 @@ import ServicesComponent from '../components/ServiceComponent';
 import StatsFeature from '../components/StatsFeature';
 import ThreePillarsSection from '../components/ThreePillar';
 import HeroAnimationHome from '../components/HeroAnimationHome';
+import { motion } from 'framer-motion';
+import { addBaseUrl } from '../utils/api';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -85,24 +87,51 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-6 relative z-20 w-full">
                     <div className="flex flex-col md:flex-row items-center">
                         {/* Left Content */}
-                        <div className="flex-1 text-center md:text-left py-20">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="flex-1 text-center md:text-left py-20"
+                        >
                             <h1 className="text-white mb-6 leading-[1.1]">
-                                <span className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                                <motion.span
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.2, duration: 0.8 }}
+                                    className="block text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight"
+                                >
                                     {heroData.title}
-                                </span>
-                                <span className="block text-4xl md:text-5xl lg:text-6xl font-light tracking-wide mt-1">
+                                </motion.span>
+                                <motion.span
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.4, duration: 0.8 }}
+                                    className="block text-4xl md:text-5xl lg:text-6xl font-light tracking-wide mt-1"
+                                >
                                     {heroData.title2}
-                                </span>
+                                </motion.span>
                             </h1>
 
-                            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-10 max-w-md mx-auto md:mx-0">
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.6, duration: 0.8 }}
+                                className="text-gray-300 text-sm md:text-base leading-relaxed mb-10 max-w-md mx-auto md:mx-0"
+                            >
                                 {heroData.description}
-                            </p>
+                            </motion.p>
 
-                            <button className="bg-[#E20613] hover:bg-red-700 text-white px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all transform hover:scale-105 shadow-xl">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.8, duration: 0.5 }}
+                                className="bg-[#E20613] hover:bg-red-700 text-white px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all shadow-xl"
+                            >
                                 {heroData.buttonText}
-                            </button>
-                        </div>
+                            </motion.button>
+                        </motion.div>
 
                         {/* Right Content - Empty spacer to keep layout balanced */}
                         <div className="flex-1 hidden md:block"></div>
@@ -111,25 +140,41 @@ const Home = () => {
             </section>
 
             {/* 2. Trusted By Section (Moved outside to maintain visibility) */}
-            <section className="bg-white py-12 border-b border-gray-100">
+            <section className="bg-white py-12 border-b border-gray-100 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex flex-col items-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="flex flex-col items-center"
+                    >
                         <div className="mb-10 text-center">
-                            <span className="bg-gray-100 border border-gray-200 px-6 py-2 rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-600">
+                            <motion.span
+                                whileHover={{ scale: 1.05 }}
+                                className="bg-gray-100 border border-gray-200 px-6 py-2 rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-600 block cursor-default"
+                            >
                                 {trustedByData.badge}
-                            </span>
+                            </motion.span>
                         </div>
 
                         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-center pt-4">
                             {(trustedByData.testimonials || []).map((testimonial, i) => (
-                                <div key={i} className="flex flex-col items-center">
-                                    <p className="text-gray-500 text-xs md:text-sm max-w-[200px] leading-relaxed">
-                                        {testimonial}
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                                    className="flex flex-col items-center"
+                                >
+                                    <p className="text-gray-500 text-xs md:text-sm max-w-[200px] leading-relaxed italic">
+                                        "{testimonial}"
                                     </p>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
@@ -145,18 +190,29 @@ const Home = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {(processData.cards || []).map((card, index) => (
-                            <div key={index} className="rounded-2xl overflow-hidden bg-[#333] shadow-xl group">
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.2, duration: 0.5 }}
+                                className="rounded-2xl overflow-hidden bg-[#333] shadow-xl group"
+                            >
                                 <div className="h-64 overflow-hidden">
-                                    <img src={card.image} alt={card.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    <img src={card.image ? addBaseUrl(card.image) : "/images/card-placeholder.jpg"  } 
+                                    alt={card.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                 </div>
                                 <div className="p-8 relative">
                                     <h3 className="text-white text-2xl font-bold mb-3">{card.title}</h3>
                                     <p className="text-gray-400 mb-12 text-sm leading-relaxed">{card.description}</p>
-                                    <button className="absolute bottom-6 right-6 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition">
+                                    <motion.button
+                                        whileHover={{ scale: 1.1, backgroundColor: "#B91C1C" }}
+                                        className="absolute bottom-6 right-6 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white transition"
+                                    >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                    </button>
+                                    </motion.button>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </div>

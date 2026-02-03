@@ -1,6 +1,27 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchStatsFeature } from '../features/homepageSlice';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+
+const Counter = ({ value }) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+
+  // Extract number and suffix (like %)
+  const numericValue = parseInt(value, 10) || 0;
+  const suffix = value.replace(/[0-9]/g, '');
+
+  useEffect(() => {
+    const controls = animate(count, numericValue, {
+      duration: 2,
+      delay: 0.5,
+      ease: "easeOut"
+    });
+    return controls.stop;
+  }, [numericValue, count]);
+
+  return <motion.span>{rounded}</motion.span>;
+};
 
 const StatsFeature = () => {
   const dispatch = useDispatch();
@@ -26,17 +47,18 @@ const StatsFeature = () => {
 
   // Use API data if available, otherwise use fallback
   const data = statsFeature.data || defaultData;
-  const { badge, title, highlightedTitle, statValue, statDescription, blogTitle, blogDescription, blogButtonText } = data;
+  const { badge, title, highlightedText, statValue, statDescription, blogTitle, blogDescription, blogButtonText } = data;
+
+  // Extract suffix to keep it static (like %)
+  const suffix = statValue.replace(/[0-9]/g, '');
 
   // Show loading state
   if (statsFeature.loading) {
     return (
-      <section className="bg-[#E5E5E5] py-20 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-500 font-medium">Loading stats...</p>
-        </div>
-      </section>
+      <div className="max-w-6xl mx-auto text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
+        <p className="text-gray-500 font-medium">Loading stats...</p>
+      </div>
     );
   }
 
@@ -51,24 +73,47 @@ const StatsFeature = () => {
       </div>
 
       <div className="max-w-6xl mx-auto text-center">
-        <span className="bg-[#222] text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest">
-          {badge}
-        </span>
-        <h2 className="text-3xl font-bold mt-4 mb-12 text-[#1a1a1a]">
-          {title} <span className="text-red-600">{highlightedTitle}</span>
-        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="bg-[#222] text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest">
+            {badge}
+          </span>
+          <h2 className="text-3xl font-bold mt-4 mb-12 text-[#1a1a1a]">
+            {title} <span className="text-red-600">{highlightedText}</span>
+          </h2>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 items-stretch">
           {/* Stats Card */}
-          <div className="bg-transparent border border-red-500 rounded-2xl p-8 flex items-center gap-6">
-            <h3 className="text-7xl font-black text-red-600">{statValue}</h3>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            whileHover={{ scale: 1.02 }}
+            className="bg-transparent border border-red-500 rounded-2xl p-8 flex items-center gap-6"
+          >
+            <h3 className="text-7xl font-black text-red-600">
+              <Counter value={statValue} />{suffix}
+            </h3>
             <p className="text-left text-xs text-gray-700 leading-relaxed">
               {statDescription}
             </p>
-          </div>
+          </motion.div>
 
           {/* Blog/Info Card */}
-          <div className="bg-[#3D3D3D] rounded-2xl p-10 text-left flex flex-col justify-between">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            whileHover={{ scale: 1.02 }}
+            className="bg-[#3D3D3D] rounded-2xl p-10 text-left flex flex-col justify-between"
+          >
             <div>
               <h4 className="text-white font-semibold mb-4 leading-snug">
                 {blogTitle}
@@ -77,10 +122,14 @@ const StatsFeature = () => {
                 {blogDescription}
               </p>
             </div>
-            <button className="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold py-3 px-6 rounded-full w-max transition-all">
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: "#B91C1C" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-red-600 text-white text-[10px] font-bold py-3 px-6 rounded-full w-max transition-all"
+            >
               {blogButtonText || "READ BLOG"}
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
     </section>

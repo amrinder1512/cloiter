@@ -1,12 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../utils/api';
 
+// Async thunk for fetching career page content
+export const fetchCareerPage = createAsyncThunk(
+    'careers/fetchPageContent',
+    async () => {
+        try {
+            const response = await api.get('/career');
+            return response.data.data || response.data;
+        } catch (error) {
+            console.error('Fetch career page error:', error);
+            throw error;
+        }
+    }
+);
+
 // Async thunk for fetching jobs
 export const fetchJobs = createAsyncThunk(
     'careers/fetchJobs',
     async () => {
         try {
-            const response = await api.get('/careers/ui');
+            const response = await api.get('/jobs');
             console.log("Fetched jobs data:", response.data);
 
             const data = response.data.data || response.data;
@@ -17,7 +31,7 @@ export const fetchJobs = createAsyncThunk(
             }
 
             return data.map((job, index) => ({
-                id: job.id || index + 1,
+                id: job.id || job._id || index + 1,
                 title: job.title || 'Job Title',
                 description: job.description || 'Job description goes here...',
                 department: job.department || 'General'
@@ -38,6 +52,7 @@ const FALLBACK_JOBS = [
 const careersSlice = createSlice({
     name: 'careers',
     initialState: {
+        pageData: null,
         jobs: [],
         loading: false,
         error: null,
@@ -45,6 +60,18 @@ const careersSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(fetchCareerPage.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCareerPage.fulfilled, (state, action) => {
+                state.loading = false;
+                state.pageData = action.payload;
+            })
+            .addCase(fetchCareerPage.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
             .addCase(fetchJobs.pending, (state) => {
                 state.loading = true;
                 state.error = null;

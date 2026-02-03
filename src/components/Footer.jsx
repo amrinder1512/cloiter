@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchFooter } from '../features/footerSlice';
 import { footerData } from '../data/footer';
+import { addBaseUrl } from '../utils/api';
 
 const Footer = () => {
     const dispatch = useDispatch();
@@ -40,7 +41,8 @@ const Footer = () => {
                 <div className="max-w-7xl mx-auto px-5 mb-16">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-24 text-center md:text-left">
                         <div>
-                            <img src={currentFooterData.logo.src} alt={currentFooterData.logo.alt} className="w-32 md:w-40 lg:w-56 h-auto mx-auto md:mx-0" />
+                            <img src={currentFooterData.logo.src ? addBaseUrl(currentFooterData.logo.src) : "/images/logo-placeholder.jpg"} 
+                            alt={currentFooterData.logo.alt} className="w-32 md:w-40 lg:w-56 h-auto mx-auto md:mx-0" />
                             <p className="text-gray-300 leading-relaxed mt-4 md:mt-0 md:ml-4 text-sm md:text-base">{currentFooterData.description}</p>
                         </div>
                         <div>

@@ -6,9 +6,16 @@ export const fetchBlogs = createAsyncThunk(
     'blog/fetchBlogs',
     async () => {
         try {
-            const response = await api.get('/blogs/ui');
+            const response = await api.get('/article');
             console.log("Fetched blogs data:", response.data);
-            return response.data.data || response.data;
+            const data = response.data.data || response.data;
+            if (Array.isArray(data)) {
+                return data.map(blog => ({
+                    ...blog,
+                    id: blog.id || blog._id
+                }));
+            }
+            return data;
         } catch (error) {
             console.error('Fetch blogs error:', error);
             throw error;
@@ -21,9 +28,13 @@ export const fetchBlogById = createAsyncThunk(
     'blog/fetchBlogById',
     async (id) => {
         try {
-            const response = await api.get(`/blogs/ui/${id}`);
+            const response = await api.get(`/article/${id}`);
             console.log("Fetched blog detail:", response.data);
-            return response.data.data || response.data;
+            const data = response.data.data || response.data;
+            return {
+                ...data,
+                id: data.id || data._id
+            };
         } catch (error) {
             console.error('Fetch blog detail error:', error);
             throw error;

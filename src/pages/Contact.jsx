@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContactPage, submitContactForm, resetSubmitStatus } from '../features/contactSlice';
 import { addBaseUrl } from '../utils/api';
+import Loader from '../components/Loader';
 
 const Contact = () => {
     const dispatch = useDispatch();
@@ -60,11 +61,7 @@ const Contact = () => {
     };
 
     if (loading) {
-        return (
-            <div className="bg-[#434242] min-h-screen flex justify-center items-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
-            </div>
-        );
+        return <Loader />;
     }
 
     const content = pageContent || {};

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchJobs, submitJobApplication, uploadResume } from '../features/careersSlice';
 import HeroAnimation from '../components/HeroAnimation';
+import Loader from '../components/Loader';
 
 const JobDetail = () => {
     const { id } = useParams();
@@ -115,13 +116,7 @@ const JobDetail = () => {
     };
 
     if (loading || (jobs.length === 0 && !error)) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mb-4"></div>
-                </div>
-            </div>
-        );
+        return <Loader />;
     }
 
     if (!job) {

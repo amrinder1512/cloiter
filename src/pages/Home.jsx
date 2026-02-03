@@ -15,6 +15,7 @@ import ServicesComponent from '../components/ServiceComponent';
 import StatsFeature from '../components/StatsFeature';
 import ThreePillarsSection from '../components/ThreePillar';
 import HeroAnimationHome from '../components/HeroAnimationHome';
+import Loader from '../components/Loader';
 import { motion } from 'framer-motion';
 import { addBaseUrl } from '../utils/api';
 
@@ -52,7 +53,7 @@ const Home = () => {
     const featuredServices = services.slice(0, 3);
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+        return <Loader />;
     }
 
     if (error && (!services || services.length === 0)) {

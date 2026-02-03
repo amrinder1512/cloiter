@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import HeroAnimation from '../components/HeroAnimation';
 import { fetchServices } from '../features/servicesSlice';
+import Loader from '../components/Loader';
 
 const ServiceDetail = () => {
     const { id } = useParams();
@@ -20,14 +21,7 @@ const ServiceDetail = () => {
         window.scrollTo(0, 0);
     }, [id]);
     if (loading || (services.length === 0 && !error)) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mb-4"></div>
-                    <p className="text-gray-500 animate-pulse">Loading service details...</p>
-                </div>
-            </div>
-        );
+        return <Loader />;
     }
 
     // 2. Show error if the API call actually failed

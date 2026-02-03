@@ -141,6 +141,7 @@ const TestimonialSlider = () => {
                                     </svg>
                                 </div>
                             </div>
+                            
 
                             <p className="text-xl md:text-3xl text-gray-100 leading-relaxed font-normal max-w-4xl italic">
                                 "{displayTestimonials[currentIndex].text}"

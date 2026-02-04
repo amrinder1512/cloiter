@@ -15,7 +15,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });  
   };
 
   // Prevent background scroll when menu is open

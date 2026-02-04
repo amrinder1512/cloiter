@@ -13,9 +13,10 @@ const Header = () => {
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
 
   const dropdownRef = useRef(null);
+  const closeTimeout = useRef(null);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });  
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Prevent background scroll when menu is open
@@ -29,6 +30,12 @@ const Header = () => {
       dispatch(fetchServices());
     }
   }, [dispatch, services.length]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    };
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -69,8 +76,15 @@ const Header = () => {
                 <li
                   className="relative group"
                   ref={dropdownRef}
-                  onMouseEnter={() => setIsServicesOpen(true)}
-                  onMouseLeave={() => setIsServicesOpen(false)}
+                  onMouseEnter={() => {
+                    if (closeTimeout.current) clearTimeout(closeTimeout.current);
+                    setIsServicesOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    closeTimeout.current = setTimeout(() => {
+                      setIsServicesOpen(false);
+                    }, 300);
+                  }}
                 >
                   <div className="flex items-center gap-1 cursor-pointer">
                     <Link to="/services" className={isActive('/services')} onClick={scrollToTop}>
@@ -87,8 +101,9 @@ const Header = () => {
                   </div>
 
                   {/* Dropdown Menu */}
-                  <div className={`absolute top-full left-0 mt-2 w-64 bg-[#333333] border border-white/10 rounded-xl shadow-2xl transition-all duration-300 transform origin-top
-                    ${isServicesOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                  <div className={`absolute top-full left-0 mt-2 w-64 bg-[#333333] border border-white/10 rounded-xl shadow-2xl transition-all duration-500 transform origin-top
+                    ${isServicesOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}
+                    before:absolute before:-top-4 before:left-0 before:w-full before:h-4 before:content-[""]`}>
                     <div className="py-3 px-2">
                       {services.length > 0 ? (
                         services.map((service) => (
